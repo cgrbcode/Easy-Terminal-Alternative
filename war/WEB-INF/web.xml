@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>CommunicationImpl</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.CommunicationImpl
+		</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>PluginServlet</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.PluginServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Results</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.Results
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Cluster</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.ClusterServlet
+		</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>JobCallback</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.JobCallbackServlet
+		</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ExternalWrapper</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.ExternalWrapperServlet
+		</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AuthServlet</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.AuthServlet
+		</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>API</servlet-name>
+		<servlet-class>
+			cgrb.eta.server.APIServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CommunicationImpl</servlet-name>
+		<url-pattern>/eta/communication</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>CommunicationImpl</servlet-name>
+		<url-pattern>/eta/wrapper</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Cluster</servlet-name>
+		<url-pattern>/cluster</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>CommunicationImpl</servlet-name>
+		<url-pattern>/eta/sql</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>PluginServlet</servlet-name>
+		<url-pattern>/plugin</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Results</servlet-name>
+		<url-pattern>/results/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AuthServlet</servlet-name>
+		<url-pattern>/auth</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ExternalWrapper</servlet-name>
+		<url-pattern>/external</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JobCallback</servlet-name>
+		<url-pattern>/jobcallback/*</url-pattern>
+	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>API</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>ETA.html</welcome-file>
+	</welcome-file-list>
+	<!-- <security-constraint> <web-resource-collection> <web-resource-name>securedapp</web-resource-name> 
+		<url-pattern>/*</url-pattern> </web-resource-collection> <user-data-constraint> 
+		<transport-guarantee>CONFIDENTIAL</transport-guarantee> </user-data-constraint> 
+		</security-constraint> -->
+</web-app>

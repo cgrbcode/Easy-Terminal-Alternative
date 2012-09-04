@@ -1,0 +1,330 @@
+<!doctype html>
+<html>
+	<head>
+	
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<link rel="icon" type="image/ico" href="/images/favicon.ico">
+		<script> var isomorphicDir = "eta/sc/"; </script> 
+		<script type="text/javascript" language="javascript" src="eta/eta.nocache.js"></script>
+		<style type=text/css>
+		body{
+		font-family: courie,"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
+		Geneva, Verdana, sans-serif;
+		margin:0px;
+		}
+		font{
+		font-size:14px;
+		}
+			#top{
+				height:100px;
+				width:100%;
+				background-color: #1D508A;
+				border-radius:0 0 20px 20px;
+				-moz-border-radius:0 0 20px 20px;
+				margin-bottom:70px;
+				font-size:30px;
+			}
+			#title{
+				color:white;
+			}
+			#logo{
+				position:absolute;
+				left: 47px;
+				top:-7px;
+			}
+			#title{
+				position:absolute;
+				left: 250px;
+				top:30px;
+				font-family: courier
+			}
+			#center{
+				width:100%;
+				display:table;
+			}
+			#right{
+				height:300px;
+				padding:20px;
+				width:40%;
+				display: table-cell;
+				vertical-align:top;
+			}
+			#left{
+				height:300px;
+				padding-top:30px;
+				width:auto;
+				display: table-cell;
+				vertical-align:top;
+			}
+			#bar{
+				height: 300px;
+				width:4px;
+				border-radius:10px;
+				background-color: #1D508A;
+				display: table-cell;
+			}
+			#login-text{
+				font-size:25px;
+				color:#5087C4;
+				border-bottom:2px solid #6F97C4;
+				width:100%;
+			}
+			.input-text{
+				color:#5087C4;
+				padding-top:6px;
+				font-size:20px;
+				padding-left:10px;
+			}
+			input{
+				outline: none;
+				border: none;
+				background-color: #CCC;
+				border-radius: 5px;
+				-moz-border-radius:5px;
+				font-size: 20px;
+				width: 100%;
+				padding:4px;
+				padding-left:5px;
+				color:white;
+			}
+			#submit{
+				background-color: #1D508A;
+				-moz-border-radius:10px;
+				border-radius:10px;
+				font-size:20px;
+				padding: 4px 8px;
+				margin-top:10px;
+				color:white;
+				width:56px;
+			}
+			
+			.feature-image img{
+				height:50px;
+				
+			}
+			#submit:hover{
+				background-color: #004D6A;
+				cursor: pointer;
+			}
+			a{
+				text-decoration: none;
+				color:#636363;
+			}
+			
+#circularG{
+position:relative;
+display:none;
+width:31px;
+height:31px}
+
+.circularG{
+position:absolute;
+background-color:#092F5A;
+width:7px;
+height:7px;
+-webkit-border-radius:5px;
+-moz-border-radius:5px;
+-webkit-animation-name:bounce_circularG;
+-webkit-animation-duration:1.04s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:linear;
+-moz-animation-name:bounce_circularG;
+-moz-animation-duration:1.04s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:linear;
+border-radius:5px;
+-o-animation-name:bounce_circularG;
+-o-animation-duration:1.04s;
+-o-animation-iteration-count:infinite;
+-o-animation-direction:linear;
+-ms-animation-name:bounce_circularG;
+-ms-animation-duration:1.04s;
+-ms-animation-iteration-count:infinite;
+-ms-animation-direction:linear;
+}
+
+#circularG_1{
+left:0;
+top:12px;
+-webkit-animation-delay:0.39s;
+-moz-animation-delay:0.39s;
+-o-animation-delay:0.39s;
+-ms-animation-delay:0.39s;
+}
+
+#circularG_2{
+left:3px;
+top:3px;
+-webkit-animation-delay:0.52s;
+-moz-animation-delay:0.52s;
+-o-animation-delay:0.52s;
+-ms-animation-delay:0.52s;
+}
+
+#circularG_3{
+top:0;
+left:12px;
+-webkit-animation-delay:0.65s;
+-moz-animation-delay:0.65s;
+-o-animation-delay:0.65s;
+-ms-animation-delay:0.65s;
+}
+
+#circularG_4{
+right:3px;
+top:3px;
+-webkit-animation-delay:0.78s;
+-moz-animation-delay:0.78s;
+-o-animation-delay:0.78s;
+-ms-animation-delay:0.78s;
+}
+
+#circularG_5{
+right:0;
+top:12px;
+-webkit-animation-delay:0.9099999999999999s;
+-moz-animation-delay:0.9099999999999999s;
+-o-animation-delay:0.9099999999999999s;
+-ms-animation-delay:0.9099999999999999s;
+}
+
+#circularG_6{
+right:3px;
+bottom:3px;
+-webkit-animation-delay:1.04s;
+-moz-animation-delay:1.04s;
+-o-animation-delay:1.04s;
+-ms-animation-delay:1.04s;
+}
+
+#circularG_7{
+left:12px;
+bottom:0;
+-webkit-animation-delay:1.1700000000000002s;
+-moz-animation-delay:1.1700000000000002s;
+-o-animation-delay:1.1700000000000002s;
+-ms-animation-delay:1.1700000000000002s;
+}
+
+#circularG_8{
+left:3px;
+bottom:3px;
+-webkit-animation-delay:1.3s;
+-moz-animation-delay:1.3s;
+-o-animation-delay:1.3s;
+-ms-animation-delay:1.3s;
+}
+
+@-webkit-keyframes bounce_circularG{
+0%{
+-webkit-transform:scale(1)}
+
+100%{
+-webkit-transform:scale(.3)}
+
+}
+
+@-moz-keyframes bounce_circularG{
+0%{
+-moz-transform:scale(1)}
+
+100%{
+-moz-transform:scale(.3)}
+
+}
+
+@-o-keyframes bounce_circularG{
+0%{
+-o-transform:scale(1)}
+
+100%{
+-o-transform:scale(.3)}
+
+}
+
+@-ms-keyframes bounce_circularG{
+0%{
+-ms-transform:scale(1)}
+
+100%{
+-ms-transform:scale(.3)}
+
+}
+
+		</style>
+		<title>
+  			ETA: Easy Terminal Alternative Login
+		</title>
+	</head>
+<body bgcolor="#ffffff" link="#0000FF" vlink="#0000FF">
+<div id="top"><div id="title">Easy Terminal Alternative</div></div>
+<img id="logo" src="images/icon_big.png"/>
+<div id="center">
+	<div id="left">
+	
+	
+	<table border="0" cellpadding="0" cellspacing="0" width="95%" style="margin-left:20px;"><tbody>
+  <tr>
+  <td class="feature-image"><img src="/images/submit_job.png" >
+
+</td>
+  <td class="feature-description">
+  <font size="-1"><b>Submit Jobs</b><br>Choose from many wrappers to submit or enter in a command</font>
+  </td>
+  </tr>
+  <tr>
+  <td class="feature-image"><img src="/images/monitor.png" ></td>
+  <td class="feature-description">
+  <font size="-1"><b>Monitor</b><br>View live what jobs are running and the status of any machine on the cloud.</font>
+  </td>
+  </tr>
+  <tr>
+  <td class="feature-image"><img src="/images/results.png" ></td>
+  <td class="feature-description">
+  <font size="-1"><b>View Results</b><br>View the results of finished jobs.</font>
+  </td>
+  </tr>
+    <tr>
+  <td class="feature-image"><img src="/images/share.png" ></td>
+  <td class="feature-description">
+  <font size="-1"><b>Share</b><br>Users can share results with other users.</font>
+  </td>
+  </tr>
+</tbody></table>
+	
+	
+	</div>
+	<div id="bar"></div>
+	<div id="right">
+		<div id="login-text">Please Login</div>
+		<div  class="input-text">Username:</div>
+		<input id="username"></input>
+		<div class="input-text">Password:</div>
+		<input id="password" type="password"></input>
+		<div id="submit">Login</div>
+		<div id="circularG">
+<div id="circularG_1" class="circularG">
+</div>
+<div id="circularG_2" class="circularG">
+</div>
+<div id="circularG_3" class="circularG">
+</div>
+<div id="circularG_4" class="circularG">
+</div>
+<div id="circularG_5" class="circularG">
+</div>
+<div id="circularG_6" class="circularG">
+</div>
+<div id="circularG_7" class="circularG">
+</div>
+<div id="circularG_8" class="circularG">
+</div>
+</div>
+</div>
+		
+	</div>
+</div>
+<div style="text-align:center;font-size:10px;font-weight:bold;padding-top:40px;color:#636363">Developed by Alexander Boyd alex@cgrb.oregonstate.edu</div>
+<p style="text-align:center;font-size:10px;font-weight:bold;font-style:none"><a href="http://oregonstate.edu/main/about/copyright" target="_blank">Copyright © 2012</a> <a href="http://oregonstate.edu" target="_blank">Oregon State University</a></p>
+</body>
+</html>
