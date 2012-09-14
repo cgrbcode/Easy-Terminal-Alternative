@@ -202,6 +202,7 @@ public class WrapperCreator extends ETATab {
 		communicationService.getCommandsInPath(new MyAsyncCallback<String[]>() {
 			@Override
 			public void success(String[] result) {
+				if(result==null)return;
 				for (String program : result)
 					oracle.add(program);
 			}

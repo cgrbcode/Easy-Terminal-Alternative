@@ -105,8 +105,8 @@ public class ETA implements EntryPoint {
 
 	private static ETA instance;
 	private CommunicationServiceAsync communicationService;
-	private WrapperServiceAsync wrapperService;
-	private SQLServiceAsync sqlService;
+	public static WrapperServiceAsync wrapperService;
+	public static SQLServiceAsync sqlService;
 	private User user = null;
 	private TabPane mainTabSet;
 	private static Label textFunction;

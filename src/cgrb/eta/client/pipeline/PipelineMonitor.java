@@ -48,10 +48,11 @@ import cgrb.eta.client.Theme;
 import cgrb.eta.shared.etatype.Job;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.touch.client.Point;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
-public class PipelineMonitor extends FlowPanel {
+public class PipelineMonitor extends FlowPanel implements BlockDisplayListener{
 	public static final SQLServiceAsync sqlService = (SQLServiceAsync) GWT.create(SQLService.class);
 	private HashMap<Integer, JobBlock> blocks = new HashMap<Integer, JobBlock>();
 	private CurrentBlock current;
@@ -65,15 +66,31 @@ public class PipelineMonitor extends FlowPanel {
 				block.setJob(record);
 				if (record.getId() >= lastJob) {
 					current.changeJob(record);
-					current.smoothMoveTo(block);
+					current.smoothMoveTo(new Point(block.getAbsoluteLeft()-getAbsoluteLeft(), block.getAbsoluteTop()-getAbsoluteTop()));
 					lastJob = record.getId();
 				}
 			}
 		}
 
 		@Override
-		public void onAddition(Job record) {
-
+		public void onAddition(Job job) {
+			JobBlock temp;
+			if (job.getPipeline() > 0)
+				temp = new JobPipeBlock(job);
+			else
+				temp = new JobBlock(job);
+			temp.setListener(PipelineMonitor.this);
+			if (!blocks.containsKey(job.getId())) {
+				if (job.getParent() == parent.getId()) {
+					add(new Arrow());
+					add(temp);
+				} else {
+					JobBlock bl = blocks.get(job.getParent());
+					if (bl != null) {
+						((JobPipeBlock) bl).addBlock(temp);
+					}
+				}
+			}
 		}
 
 		@Override
@@ -103,29 +120,35 @@ public class PipelineMonitor extends FlowPanel {
 				center.setWidth("100px");
 				center.setStyleName("start-block");
 				center.setHTML("<div style='padding-top:5px;background:none;'>Start<div>");
+				HTML key = new HTML("<div style='margin-top:13px' class='finished'></div><p>= Job has finished</p><div class='running'></div><p>= Job is running</p><div class='failed'></div><p>=Job has failed</p>");
+				key.setStyleName("monitor-key");
+				add(key);
 				add(center);
 				add(current);
 				int lastWaitingFor = 0;
 				for (Job job : result) {
-					
-					JobBlock temp ;
-					if(job.getPipeline()>0)
-						temp=new JobPipeBlock(job);
+
+					JobBlock temp;
+					if (job.getPipeline() > 0)
+						temp = new JobPipeBlock(job);
 					else
-						temp=new JobBlock(job);
-					blocks.put(job.getId(), temp);
-					if (job.getParent() == parent.getId()) {
-						add(new Arrow());
-						add(temp);
-						if (job.getStatus().startsWith("Waiting for") && (job.getWaitingFor() < lastWaitingFor || lastWaitingFor == 0)) {
-							lastWaitingFor = job.getWaitingFor();
-						} else if (job.getStatus().equals("Failed") || job.getStatus().equals("Cancelled")) {
-							lastWaitingFor = job.getId();
-						}
-					}else{
-						JobBlock bl = blocks.get(job.getParent());
-						if(bl!=null){
-							((JobPipeBlock)bl).addBlock(temp);
+						temp = new JobBlock(job);
+					temp.setListener(PipelineMonitor.this);
+					if (!blocks.containsKey(job.getId())) {
+						blocks.put(job.getId(), temp);
+						if (job.getParent() == parent.getId()) {
+							add(new Arrow());
+							add(temp);
+							if (job.getStatus().startsWith("Waiting for") && (job.getWaitingFor() < lastWaitingFor || lastWaitingFor == 0)) {
+								lastWaitingFor = job.getWaitingFor();
+							} else if (job.getStatus().equals("Failed") || job.getStatus().equals("Cancelled")) {
+								lastWaitingFor = job.getId();
+							}
+						} else {
+							JobBlock bl = blocks.get(job.getParent());
+							if (bl != null) {
+								((JobPipeBlock) bl).addBlock(temp);
+							}
 						}
 					}
 				}
@@ -136,13 +159,39 @@ public class PipelineMonitor extends FlowPanel {
 						return;
 					}
 					current.changeJob(block.getJob());
-					current.moveTo(blocks.get(lastWaitingFor));
+					JobBlock temp =blocks.get(lastWaitingFor); 
+					current.moveTo(new Point(temp.getAbsoluteLeft()-getAbsoluteLeft(), temp.getAbsoluteTop()-getAbsoluteTop()));
 				} else {
 					remove(current);
 				}
 				EventListener.getInstance().addETATypeListener(Job.class.getName(), jobListener);
 			}
 		});
+	}
+
+	@Override
+	public void blockShown(int job) {
+		JobBlock block = blocks.get(job);
+		if(block.getJob().getPipeline()!=0){
+			JobPipeBlock pipeBlock = (JobPipeBlock)block;
+			ArrayList<JobBlock> blocksList = pipeBlock.getBlocks();
+			for(JobBlock innerBlock: blocksList){
+				if(innerBlock.getJob().getPipeline()>0){
+					blockShown(innerBlock.getJob().getId());
+				}else{
+					if(innerBlock.getJob().getStatus().equals("Running")||innerBlock.getJob().getStatus().equals("Failed")){
+						current.changeJob(innerBlock.getJob());
+						current.smoothMoveTo(new Point(innerBlock.getAbsoluteLeft()-getAbsoluteLeft(), innerBlock.getAbsoluteTop()-getAbsoluteTop()));
+						return;
+					}
+				}
+			}
+		}
+		current.moveTo(new Point(-100, 100));
+	}
+
+	@Override
+	public void blockHidden(int job) {
 	}
 
 }

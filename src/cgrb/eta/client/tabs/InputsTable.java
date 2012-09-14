@@ -99,7 +99,6 @@ public class InputsTable extends Composite implements DragListener {
 				return "100px";
 			}
 		};
-		
 		Column<Input> type = new Column<Input>("Type") {
 			@Override
 			public Object getValue(Input record) {
@@ -228,8 +227,10 @@ public class InputsTable extends Composite implements DragListener {
 
 		if(simple)
 			inputs = new Table<Input>(false, remove, name, type,description, value, flag, required);
-		else
+		else{
 		inputs = new Table<Input>(false, remove, name, type, description, value, flag, cat, required);
+		inputs.setEmptyString("Click add new Input above to add a new input");
+		}
 		inputs.setDragListener(this);
 		inputs.setRowClickHandler(new RowClickHandler<Input>() {
 			public void rowClicked(Input record, int col, int row) {

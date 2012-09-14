@@ -668,6 +668,7 @@ public class SqlManager {
 				} else {
 					Vector<String[]> tempList = runQuery(getPreparedStatement("select id from job where parent=" + temp[2] + " and status not like 'Finished%'"));
 					if (tempList.size() == 0) {
+						
 						updateJobStatus(Integer.parseInt(temp[2]), "Finished");
 						CommunicationImpl.getInstance().runNextJobs(Integer.parseInt(temp[2]));
 					}
@@ -1127,7 +1128,7 @@ public class SqlManager {
 
 		return null;
 	}
-	
+
 	/**
 	 * @param token
 	 * @return
@@ -1203,10 +1204,10 @@ public class SqlManager {
 		try {
 			statement = getConnect().createStatement();
 			ResultSet rs;
-			if(user>0){
-			rs= statement.executeQuery("Select u.name,w.description,w.id,w.name,w.public,w.program,s.rating from wrapper w left join user u on u.id=w.creator left join wrapper_star s on (s.wrapper=w.id and s.user=" + user + ") where public=1 or w.creator=" + user + " order by w.name ASC");
-			}else{
-				rs= statement.executeQuery("Select u.name,w.description,w.id,w.name,w.public,w.program,s.rating from wrapper w left join user u on u.id=w.creator left join wrapper_star s on (s.wrapper=w.id and s.user=" + user + ") order by w.name ASC");
+			if (user > 0) {
+				rs = statement.executeQuery("Select u.name,w.description,w.id,w.name,w.public,w.program,s.rating from wrapper w left join user u on u.id=w.creator left join wrapper_star s on (s.wrapper=w.id and s.user=" + user + ") where public=1 or w.creator=" + user + " order by w.name ASC");
+			} else {
+				rs = statement.executeQuery("Select u.name,w.description,w.id,w.name,w.public,w.program,s.rating from wrapper w left join user u on u.id=w.creator left join wrapper_star s on (s.wrapper=w.id and s.user=" + user + ") order by w.name ASC");
 			}
 			while (rs.next()) {
 				Wrapper wrapper = new Wrapper();
@@ -1285,7 +1286,7 @@ public class SqlManager {
 			Vector<UserPipeline> data = new Vector<UserPipeline>();
 			while (rs.next()) {
 				UserPipeline pipeline = new UserPipeline(rs.getInt("ps.parent"), rs.getString("ps.name"), rs.getBoolean("p.public"), rs.getInt("ps.pipeline"), rs.getString("u.name"), rs.getString("p.description"), rs.getInt("ps.id"));
-				if(pipeline.getName()==null||pipeline.getName().equals(""))
+				if (pipeline.getName() == null || pipeline.getName().equals(""))
 					pipeline.setName(rs.getString("p.name"));
 				data.add(pipeline);
 			}
@@ -1372,7 +1373,8 @@ public class SqlManager {
 		Statement statement;
 		try {
 			statement = getConnect().createStatement();
-			ResultSet rs = statement.executeQuery("Select u.name,p.description,p.id,p.name,p.public,s.rating from pipeline p left join user u on u.id=p.creator left join pipeline_star s on (s.pipeline=p.id and s.user=" + user + ") where public=1  and p.creator>0 or p.creator=" + user + " order by p.name ASC");
+			ResultSet rs = statement.executeQuery("Select u.name,p.description,p.id,p.name,p.public,s.rating from pipeline p left join user u on u.id=p.creator left join pipeline_star s on (s.pipeline=p.id and s.user=" + user + ") where public=1  and p.creator>0 or p.creator=" + user
+					+ " order by p.name ASC");
 			while (rs.next()) {
 				Pipeline pipeline = new Pipeline();
 				pipeline.setCreator(rs.getString("u.name"));
@@ -1424,6 +1426,27 @@ public class SqlManager {
 		return ret;
 	}
 
+	
+	private ArrayList<Input> getUserInputs(Pipeline pipeline){
+		ArrayList<Input> inputs = new ArrayList<Input>();
+		for (PipeComponent wrapper2 : pipeline.getSteps()) {
+			if (wrapper2 instanceof PipeWrapper) {
+				PipeWrapper wrapper = (PipeWrapper) wrapper2;
+					for (Input input : wrapper.getWrapper().getInputs()) {
+						if (!input.getValue().equals("") && input.getValue().equals("$'User Input'")) {
+							Input newPipelineInput = input.clone();
+							newPipelineInput.setId(-1);
+							input.setValue("$'"+input.getName()+"'");
+							inputs.add(newPipelineInput);
+						}
+				}
+			}else if (wrapper2 instanceof PipelineWrapper) {
+				PipelineWrapper wrapper = (PipelineWrapper) wrapper2;
+				inputs.addAll(getUserInputs(wrapper.getPipeline()));
+			}
+		}
+		return inputs;
+	}
 	/**
 	 * @param pipeline
 	 * @return
@@ -1434,6 +1457,9 @@ public class SqlManager {
 		}
 
 		executeUpdate(getPreparedStatement("update pipeline set name=?, description=? where id=" + pipeline.getId(), pipeline.getName(), pipeline.getDescription()));
+		for(Input inp:getUserInputs(pipeline)){
+			pipeline.addInput(inp);
+		}
 
 		String inputs = "(";
 		for (Input input : pipeline.getInputs()) {
@@ -1489,6 +1515,12 @@ public class SqlManager {
 					wrapper.setId(stepId);
 					for (Input input : wrapper.getWrapper().getInputs()) {
 						if (!input.getValue().equals("") && !input.getValue().equals(input.getDefaultValue())) {
+							if (input.getValue().equals("$'User Input'")) {
+								// get the input and add it to the pipeline inputs
+								Input newPipelineInput = input.clone();
+								newPipelineInput.setId(-1);
+
+							}
 							executeUpdate(getPreparedStatement("insert into pipeline_component_values values(null," + stepId + "," + input.getId() + ",? )", input.getValue()));
 						}
 					}
@@ -1733,7 +1765,7 @@ public class SqlManager {
 		Statement statement;
 		try {
 			statement = getConnect().createStatement();
-			ResultSet rs = statement.executeQuery("select * from job j  where parent="+jobId+" order by j.id asc");
+			ResultSet rs = statement.executeQuery("select * from job j  where parent=" + jobId + " order by j.id asc");
 			while (rs.next()) {
 				Job job = new Job();
 				job.setDate(rs.getDate("j.time"));
@@ -1767,9 +1799,10 @@ public class SqlManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		for(int i=0;i<ret.size();i++){
+		int size = ret.size();
+		for (int i = 0; i < size; i++) {
 			Job job = ret.get(i);
-			if(job.getPipeline()!=0){
+			if (job.getPipeline() != 0) {
 				ret.addAll(getChildJobs(job.getId()));
 			}
 		}
@@ -1778,16 +1811,16 @@ public class SqlManager {
 	}
 
 	public void saveJob(Job job) {
-			executeUpdate(getPreparedStatement("update job set name=?, working_dir=?, specs=? where id="+job.getId(),job.getName(),job.getWorkingDir(),job.getSpecs()));
-			executeUpdate(getPreparedStatement("delete from job_value where job="+job.getId()));
-			if (job.getWrapper() != null) {
+		executeUpdate(getPreparedStatement("update job set name=?, working_dir=?, specs=? where id=" + job.getId(), job.getName(), job.getWorkingDir(), job.getSpecs()));
+		executeUpdate(getPreparedStatement("delete from job_value where job=" + job.getId()));
+		if (job.getWrapper() != null) {
 			Vector<Input> inputs = job.getWrapper().getInputs();
 			for (Input input : inputs) {
 				if (input.getValue() != null && !input.getValue().equals("") && !input.getValue().equals(input.getDefaultValue())) {
 					executeUpdate(getPreparedStatement("insert into job_value values(null," + job.getId() + "," + input.getId() + ",? )", input.getValue()));
 				}
 			}
-			return ;
+			return;
 		} else if (job.getPipelineObject() != null) {
 			Vector<Input> inputs = job.getPipelineObject().getInputs();
 			for (Input input : inputs) {
@@ -1795,7 +1828,7 @@ public class SqlManager {
 					executeUpdate(getPreparedStatement("insert into job_value values(null," + job.getId() + "," + input.getId() + ",? )", input.getValue()));
 				}
 			}
-			return ;
+			return;
 		}
 	}
 }

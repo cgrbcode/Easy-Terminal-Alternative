@@ -256,7 +256,7 @@ public class ResultViewer extends ETATab {
 				outputs.add(tempB);
 			}
 		} else {
-			overView.add(new SimpleLabel("Working Folder: " + job.getWorkingDir()));
+			overView.add(new SimpleLabel("Working Folder: " + job.getWorkingDir()).setSelectable());
 			//add a overview panel for pipelines
 			final SimpleButton pipelineView = new SimpleButton("Pipeline View");
 			outputs.add(pipelineView.addClickHandler(new ClickHandler() {

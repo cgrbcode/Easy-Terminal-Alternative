@@ -74,6 +74,7 @@ public class Block extends Composite implements DragListener {
 	private static final WrapperServiceAsync wrapperService = (WrapperServiceAsync) GWT.create(WrapperService.class);
 	FlowPanel temp = new FlowPanel();
 	private Workspace workspace;
+
 	public Block(PipeComponent wrapper, BlockChangeListener listener) {
 		this.listener = listener;
 		startBlock.setStyleName("block");
@@ -136,18 +137,18 @@ public class Block extends Composite implements DragListener {
 			return;
 		Vector<PipeComponent> wrappers = listener.getPreviousWrappers(wrapper.getPosition());
 		outer: for (Input input : inputs) {
-			if (input.getType().startsWith("File") || input.getType().startsWith("List")||wrapper.getName().equals("Switch")) {
+			if (input.getType().startsWith("File") || input.getType().startsWith("List") || wrapper.getName().equals("Switch")) {
 				InputBlock block = new InputBlock(input);
 				inputPanel.add(block);
 				if (!input.getValue().equals("")) {
 					block.setInputValue(new Output(input.getValue(), "", "", input.getValue(), -1));
 					continue outer;
 				}
-				if (input.getType().equals("File"))
+				if (input.getType().equals("File") || input.getType().equals("File:"))
 					continue outer;
 				for (PipeComponent wrap : wrappers) {
 					for (Output output : wrap.getOutputs()) {
-						if (input.getType().length() <= 5 || input.getType().substring(5).startsWith(output.getType())) {
+						if (input.getType().length() <= 5 || output.getType().length() > 3 && (input.getType().substring(5).startsWith(output.getType()))) {
 							block.setInputValue(output);
 							continue outer;
 						}
@@ -161,7 +162,7 @@ public class Block extends Composite implements DragListener {
 
 	}
 
-	//private JobOptions options = new JobOptions();
+	// private JobOptions options = new JobOptions();
 
 	public void edit() {
 		if (wrapper instanceof PipeWrapper) {
@@ -186,16 +187,16 @@ public class Block extends Composite implements DragListener {
 				}
 			});
 		} else if (wrapper instanceof PipelineWrapper) {
-			if(workspace==null){
-			PipelineWrapper wrapper = (PipelineWrapper) this.wrapper;
-			workspace = new Workspace(wrapper.getPipeline());
-			// temp.getElement().getStyle().setPosition(Position.ABSOLUTE);
-			workspace.setStyleName("sub-workspace");
-			
-			temp.add(workspace);
-			}else{
+			if (workspace == null) {
+				PipelineWrapper wrapper = (PipelineWrapper) this.wrapper;
+				workspace = new Workspace(wrapper.getPipeline());
+				// temp.getElement().getStyle().setPosition(Position.ABSOLUTE);
+				workspace.setStyleName("sub-workspace");
+
+				temp.add(workspace);
+			} else {
 				temp.remove(workspace);
-				workspace=null;
+				workspace = null;
 			}
 		}
 	}
@@ -227,9 +228,9 @@ public class Block extends Composite implements DragListener {
 		if (rec instanceof PipeComponent) {
 			// assume that the source is being moved
 			PipeComponent src = (PipeComponent) rec;
-			if(src.getPosition()>=0)
-			listener.blockMoved(src, wrapper.getPosition());
-			else{
+			if (src.getPosition() >= 0)
+				listener.blockMoved(src, wrapper.getPosition());
+			else {
 				listener.blockAdded(src.clone(), wrapper.getPosition());
 			}
 		} else if (rec instanceof UserWrapper) {

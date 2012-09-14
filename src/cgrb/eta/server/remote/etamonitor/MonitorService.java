@@ -35,6 +35,7 @@
 package cgrb.eta.server.remote.etamonitor;
 
 import cgrb.eta.server.rmi.RemoteService;
+import cgrb.eta.shared.etatype.Job;
 
 /**
  * This serves as the client side interface to ETA from the ETAMonitor tool
@@ -64,4 +65,6 @@ public interface MonitorService extends RemoteService{
 	 * @param exitCode The exitCode that the job returned.
 	 */
 	public void jobFinished(int jobId, int exitCode);
+	public Job jobFinishedWithNext(int jobId, int exitCode);
+	public Job getJob(int id);
 }

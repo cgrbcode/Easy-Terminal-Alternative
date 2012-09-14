@@ -38,6 +38,7 @@ import cgrb.eta.client.ETA;
 import cgrb.eta.client.VoidAsyncCallback;
 import cgrb.eta.client.button.Button;
 import cgrb.eta.client.button.Seprator;
+import cgrb.eta.client.button.SimpleButton;
 import cgrb.eta.client.button.ValueListener;
 import cgrb.eta.client.images.Resources;
 import cgrb.eta.client.tabs.ResultViewer;
@@ -50,17 +51,22 @@ import cgrb.eta.shared.wrapper.Output;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 public class JobBlock extends FlowPanel {
 	protected Job job;
 	private HandlerRegistration handler;
 	private HTML edit = new HTML("<img src='images/wrench.png'/>");
 	private HTML view = new HTML("<img src='" + Resources.INSTANCE.searchWhite().getSafeUri().asString() + "'/>");
+	protected BlockDisplayListener listener;
 
-	protected JobBlock(){}
+	protected JobBlock() {
+	}
+
 	public JobBlock(final Job job) {
 		HTML jobName = new HTML(job.getName());
 		jobName.setStyleName("name");
@@ -91,7 +97,7 @@ public class JobBlock extends FlowPanel {
 				});
 			}
 		});
-
+		setupClickAction();
 		view.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -117,6 +123,42 @@ public class JobBlock extends FlowPanel {
 		return job;
 	}
 
+	protected void setupClickAction() {
+		addDomHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				PopupPanel paneler = new PopupPanel();
+				FlowPanel panel = new FlowPanel();
+				panel.setStyleName("job-block-popup");
+				if (job.getStatus().equals("Running")) {
+					panel.add(new HTML("<div id='notch'></div>Job#" + job.getId() + "<br>Status:" + job.getStatus() + "<br>Since:" + job.getRunTime() + "<br>On:" + job.getMachine()));
+				} else if (job.getStatus().equals("Finished") || job.getStatus().equals("Failed")) {
+					panel.add(new HTML("<div id='notch'></div>Job#" + job.getId() + "<br>Status:" + job.getStatus() + "<br>Since:" + job.getRunTime() + "<br>On:" + job.getMachine()));
+				} else
+					panel.add(new HTML("<div id='notch'></div>Job#" + job.getId() + "<br>Status:" + job.getStatus()));
+				panel.add(new SimpleButton("Force Run").addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						ETA.sqlService.rerunJob(job.getId(), new AsyncCallback<Void>() {
+							@Override
+							public void onSuccess(Void result) {
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+							}
+						});
+					}
+				}));
+
+				paneler.add(panel);
+				paneler.setAutoHideEnabled(true);
+				paneler.setPopupPosition(getAbsoluteLeft() + getOffsetWidth() + 10, getAbsoluteTop() - 8);
+				paneler.show();
+			}
+		}, ClickEvent.getType());
+	}
+
 	public void setJob(final Job job) {
 		setStyleName("job-block");
 		remove(edit);
@@ -125,18 +167,28 @@ public class JobBlock extends FlowPanel {
 			handler.removeHandler();
 			handler = null;
 		}
-		
+
 		this.job = job;
 		if (job.getStatus().equals("Finished") || job.getStatus().equals("Running")) {
-			if (job.getStatus().equals("Finished"))
+			if (job.getStatus().equals("Finished")) {
+				setStyleName("job-block");
 				addStyleName("finished");
+			} else {
+				setStyleName("job-block");
+				addStyleName("running");
+			}
 			insert(view, 0);
 		} else {
 			if (job.getStatus().equals("Failed") || job.getStatus().equals("Cancelled")) {
+				setStyleName("job-block");
 				addStyleName("failed");
 				insert(view, 0);
-			} 
+			}
 			insert(edit, 0);
 		}
+	}
+
+	public void setListener(BlockDisplayListener listener) {
+		this.listener = listener;
 	}
 }

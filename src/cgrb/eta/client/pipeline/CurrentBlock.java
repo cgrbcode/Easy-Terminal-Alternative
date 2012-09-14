@@ -107,16 +107,16 @@ public class CurrentBlock extends FlowPanel{
 			currentAction.setHTML("");
 		}
 	}
-	public void moveTo(JobBlock temp) {
-		getElement().getStyle().setTop(temp.getTop(), Unit.PX);
-		getElement().getStyle().setLeft(temp.getLeft()-getOffsetWidth()-40,Unit.PX);
+	public void moveTo(Point p) {
+		getElement().getStyle().setTop(p.getY(), Unit.PX);
+		getElement().getStyle().setLeft(p.getX()-getOffsetWidth()-40,Unit.PX);
 	}
-	public void smoothMoveTo(JobBlock temp) {
+	public void smoothMoveTo(Point p) {
 		Point from = new Point(getAbsoluteLeft()-getParent().getAbsoluteLeft(), getAbsoluteTop()-getParent().getAbsoluteTop());
-		Point to = new Point(temp.getLeft()-getOffsetWidth()-40,temp.getTop());
+		Point to = new Point(p.getX()-getOffsetWidth()-40,p.getY());
 		new MoveAnimation(getElement().getStyle(), from, to).run(1000);
-		getElement().getStyle().setTop(temp.getTop(), Unit.PX);
-		getElement().getStyle().setLeft(temp.getLeft()-getOffsetWidth()-40,Unit.PX);
+		getElement().getStyle().setTop(p.getY(), Unit.PX);
+		getElement().getStyle().setLeft(p.getX()-getOffsetWidth()-40,Unit.PX);
 	}
 	private class MoveAnimation extends Animation {
 		private Style style;

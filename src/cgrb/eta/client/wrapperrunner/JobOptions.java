@@ -58,8 +58,8 @@ public class JobOptions {
 	private NumberBox cores = new NumberBox();
 	private NumberBox priorty = new NumberBox();
 	private ListBox queue = new ListBox();
-	private static String[] queues;
-	private static String[] threads;
+	private static String[] queues=null;
+	private static String[] threads=null;
 	private CommunicationServiceAsync communicationService;
 
 	public JobOptions() {
@@ -105,7 +105,6 @@ public class JobOptions {
 		pane.setWidget(5, 2, ok);
 
 		window = new Window("SGE Options", pane,true);
-		System.out.println("as;dhfa;sdj");
 		if (threads != null) {
 			for (int i = 0; i < threads.length; i++) {
 				threadEnv.addItem(threads[i]);
@@ -117,14 +116,12 @@ public class JobOptions {
 				queue.addItem(thread);
 			}
 		} else {
-			
-			
 			communicationService.getThreadEnviroments( new MyAsyncCallback<String[]>() {
 				@Override
 				public void success(String[] result) {
 					threads=result;
-					for (int i = 0; i < JobOptions.threads.length; i++) {
-						threadEnv.addItem(JobOptions.threads[i]);
+					for (int i = 0; i < threads.length; i++) {
+						threadEnv.addItem(threads[i]);
 						if (JobOptions.threads[i].equals("thread"))
 							threadEnv.setSelectedIndex(i);
 					}
@@ -151,10 +148,14 @@ public class JobOptions {
 		String ret = "";
 		String ramValue = memFree.getValue();
 		boolean exportVal = export.getValue();
-		String threadsVal = threadEnv.getItemText(threadEnv.getSelectedIndex());
+		String threadsVal ="";
+		if(threadEnv.getSelectedIndex()>0)
+		threadEnv.getItemText(threadEnv.getSelectedIndex());
 		String priorty = this.priorty.getValue();
 		String coresVal = cores.getValue();
-		String qVal = queue.getItemText(queue.getSelectedIndex());
+		String qVal ="";
+		if(queue.getSelectedIndex()>0)
+		queue.getItemText(queue.getSelectedIndex());
 		if (!(ramValue == null || ramValue.equals(""))) {
 			ret += " -l h_vmem=" + ramValue + memType.getItemText(memType.getSelectedIndex());
 		}

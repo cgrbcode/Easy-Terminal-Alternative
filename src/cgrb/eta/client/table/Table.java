@@ -392,11 +392,19 @@ public class Table<T extends ETAType> extends Composite implements ClickHandler,
 			headers.setCellWidth(name, col.getWidth());
 		}
 	}
+	
+	public void resizeCols(){
+		grid.resizeColumns(columns.size());
+		int on=0;
+		for(Column<T> col:columns){
+			grid.getColumnFormatter().setWidth(on++, col.getWidth());
+		}
+		
+	}
 
 	public void removeColumn(final Column<T> col) {
 		columns.remove(col);
-		grid.resizeColumns(columns.size());
-
+		resizeCols();
 	}
 
 	void drawRow(int row, T record) {
@@ -453,6 +461,10 @@ public class Table<T extends ETAType> extends Composite implements ClickHandler,
 	}
 
 	public void addRec(T record) {
+		if(data.size()==0){
+			grid.clear();
+			resizeCols();
+		}
 		data.add(record);
 		grid.resizeRows(data.size());
 		drawRow(data.size() - 1, record);

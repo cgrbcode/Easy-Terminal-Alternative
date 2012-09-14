@@ -125,7 +125,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 	public void run() {
 		while (true) {
 			try {
-//				System.out.println("Waiting for connections.");
+				// System.out.println("Waiting for connections.");
 				Socket client = socket.accept();
 				byte[] info = new byte[31];
 				client.getInputStream().read(info);
@@ -148,8 +148,8 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 					client.close();
 					System.out.println("old or unauthorized connection");
 				}
-//				if (client.isConnected())
-//					System.out.println("Accepted a connection from: " + client.getInetAddress());
+				// if (client.isConnected())
+				// System.out.println("Accepted a connection from: " + client.getInetAddress());
 			} catch (Exception e) {
 			}
 		}
@@ -253,7 +253,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 	@Override
 	public void jobFinished(int jobId, int exitCode) {
 		SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("update job set exitCode=" + exitCode + " where id=" + jobId));
-		if (exitCode == 0||exitCode==1) {
+		if (exitCode == 0) {
 			JobEvent evt = new JobEvent(JobEvent.FINISHED, jobId);
 			evt.setChange("Finished");
 			CommunicationImpl.getInstance().eventOccured(new ETAEvent(ETAEvent.JOB, evt), -1);
@@ -317,7 +317,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 					userId = SqlManager.getInstance().getUserInfoFromUsername(userName).getId();
 				}
 				String newToken = CommunicationImpl.getInstance().generateToken();
-				System.out.println(newToken+" for user "+userName);
+				System.out.println(newToken + " for user " + userName);
 				info = (" " + newToken).getBytes();
 				sql.executeUpdate(sql.getPreparedStatement("delete from user_connection where user=" + userId));
 				sql.executeUpdate(sql.getPreparedStatement("insert into user_connection values(?," + userId + ")", newToken));
@@ -350,7 +350,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 			}
 			return;
 		}
-		System.out.println("user "+user.getId()+" is connected");
+		System.out.println("user " + user.getId() + " is connected");
 		RMIConnection con = new RMIConnection(client, new RemoteETAConnectionServiceImpl(user.getId()), false, new ConnectionListener() {
 			@Override
 			public void connectionLost() {
@@ -382,6 +382,39 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 	 */
 	public RemoteMonitorService getServiceForJob(int job) {
 		return monitorServices.get(job);
+	}
+
+	@Override
+	public Job getJob(int id) {
+		return SqlManager.getInstance().getJob(id);
+	}
+
+	@Override
+	public Job jobFinishedWithNext(int jobId, int exitCode) {
+		SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("update job set exitCode=" + exitCode + " where id=" + jobId));
+		if (exitCode == 0) {
+			Job jobO=null;
+			SqlManager sql = SqlManager.getInstance();
+			Vector<String[]> jobs = sql.runQuery(sql.getPreparedStatement("Select id from job where waiting_for=" + jobId));
+			for (String[] job : jobs) {
+				jobO = sql.getJob(Integer.parseInt(job[0]));
+				if (jobO.getWrapper() != null) {
+					break;
+				}
+			}
+			if(jobO!=null){
+				CommunicationImpl.getInstance().preventJob(jobO.getId());
+			}
+			JobEvent evt = new JobEvent(JobEvent.FINISHED, jobId);
+			evt.setChange("Finished");
+			CommunicationImpl.getInstance().eventOccured(new ETAEvent(ETAEvent.JOB, evt), -1);
+			return jobO;
+		} else {
+			JobEvent evt = new JobEvent(JobEvent.STATUS_CHANGED, jobId);
+			evt.setChange("Failed");
+			CommunicationImpl.getInstance().eventOccured(new ETAEvent(ETAEvent.JOB, evt), -1);
+		}
+		return null;
 	}
 
 }

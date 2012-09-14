@@ -36,10 +36,7 @@ package cgrb.eta.server.services;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
 import org.irods.jargon.core.connection.IRODSAccount;
@@ -87,14 +84,14 @@ public class IPlantUserService implements RemoteUserService {
 	public IPlantUserService(String username, String token) {
 		this.username = username;
 		this.token = token;
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			
-			@Override
-			public void run() {
-				renewToken();
-			}
-		}, new Date(new Date().getTime()+(60*60*1000)), 60*60*1000);
+//		Timer timer = new Timer();
+//		timer.scheduleAtFixedRate(new TimerTask() {
+//			
+//			@Override
+//			public void run() {
+//				renewToken();
+//			}
+//		}, new Date(new Date().getTime()+(60*60*1000)), 60*60*1000);
 	}
 
 	@Override
@@ -131,9 +128,9 @@ public class IPlantUserService implements RemoteUserService {
 		return ret;
 	}
 	
-	private void renewToken(){
-		post("auth-v1/renew","token="+token);
-	}
+//	private void renewToken(){
+//		post("auth-v1/renew","token="+token);
+//	}
 
 	@Override
 	public Vector<File> navigateTo(String browser, String path) {

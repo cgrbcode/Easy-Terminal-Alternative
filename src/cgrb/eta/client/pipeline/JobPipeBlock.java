@@ -34,19 +34,27 @@
  */
 package cgrb.eta.client.pipeline;
 
+import java.util.ArrayList;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 
+import cgrb.eta.client.images.Resources;
 import cgrb.eta.shared.etatype.Job;
 
 public class JobPipeBlock extends JobBlock {
 
 	private FlowPanel workspace = new FlowPanel();
+	private ArrayList<JobBlock> blocks = new ArrayList<JobBlock>();
 
 	private boolean isConcurrent = false;
+
 	public JobPipeBlock(Job job) {
 		this.job = job;
-		isConcurrent=job.getName().equals("Foreach");
+		isConcurrent = job.getName().equals("Foreach");
 		FlowPanel title = new FlowPanel();
 		title.setStyleName("job-block");
 		HTML jobName = new HTML(job.getName());
@@ -59,17 +67,60 @@ public class JobPipeBlock extends JobBlock {
 		wider.setWidth("400px");
 		wider.setHeight("1px");
 		workspace.add(wider);
-		
+		if (isConcurrent) {
+			Image left = new Image(Resources.INSTANCE.backArrow().getSafeUri());
+			workspace.add(left);
+			left.addStyleName("concurent");
+			Image right = new Image(Resources.INSTANCE.backArrow().getSafeUri());
+			right.setStyleName("mirror");
+			right.addStyleName("concurent");
+			workspace.add(right);
+			right.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					if (on >= blocks.size() - 1)
+						return;
+					workspace.remove(2);
+					listener.blockHidden(blocks.get(on).getJob().getId());
+					workspace.insert(blocks.get(++on), 2);
+					listener.blockShown(blocks.get(on).getJob().getId());
+				}
+			});
+			left.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					if (on >= 1) {
+						workspace.remove(2);
+						listener.blockHidden(blocks.get(on).getJob().getId());
+						workspace.insert(blocks.get(--on), 2);
+						listener.blockShown(blocks.get(on).getJob().getId());
+					}
+				}
+			});
+		}
+
 	}
+	
+	int on = 0;
 
 	public void addBlock(JobBlock block) {
 		if (isConcurrent) {
 			block.addStyleName("concurent");
-			workspace.add(block);
+			if (blocks.isEmpty()){
+				workspace.insert(block, 2);
+				if(listener!=null)
+				listener.blockShown(block.getJob().getId());
+			}
+			blocks.add(block);
 		} else {
 			workspace.add(new Arrow());
 			workspace.add(block);
+			blocks.add(block);
 		}
+	}
+	
+	public ArrayList<JobBlock> getBlocks(){
+		return blocks;
 	}
 
 }

@@ -92,6 +92,7 @@ public class SimpleLabel extends VerticalPanel implements MouseOverHandler, Mous
 		toolTip = new PopupPanel();
 		toolTip.add(new HTML(tip));
 		toolTip.setStyleName("tooltip");
+		toolTip.setAutoHideEnabled(true);
 		addDomHandler(this, MouseOverEvent.getType());
 		addDomHandler(this, MouseOutEvent.getType());
 	}

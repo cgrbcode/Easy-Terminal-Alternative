@@ -126,8 +126,9 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 	private Object eventLock = new Object();
 	private ClusterAPIService apiService;
 	private HashMap<Integer, JobListener> jobListeners = new HashMap<>();
+	private HashMap<Integer, Integer> preventJobs = new HashMap<>();
 
-	static{
+	static {
 		System.out.println("getting communication");
 	}
 	private static CommunicationImpl instance = null;
@@ -137,12 +138,8 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 	}
 
 	public CommunicationImpl() {
-		System.out.println("creating instance!");
 		apiService = ClusterAPIService.getInstance();
 		CommunicationImpl.instance = this;
-		System.out.println("created");
-		
-		// QstatDataService.getService();
 	}
 
 	private String getToken() {
@@ -157,6 +154,10 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		Cookie cook = new Cookie("token", generateToken());
 		this.getThreadLocalResponse().addCookie(cook);
 		return cook.getValue();
+	}
+	
+	public void preventJob(int jobId){
+		preventJobs.put(jobId, jobId);
 	}
 
 	public String generateToken() {
@@ -348,9 +349,13 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 					}
 				}
 			} else {
-				jobO.getWrapper().addVar("ETAJOB", jobId + "");
-				jobO.getWrapper().addVar("ETAHOST", System.getenv("HOSTNAME"));
-				userManager.getUserService(jobO.getUserId()).runJob(jobO);
+				if (preventJobs.containsKey(jobO.getId())) {
+					preventJobs.remove(jobO);
+				} else {
+					jobO.getWrapper().addVar("ETAJOB", jobId + "");
+					jobO.getWrapper().addVar("ETAHOST", System.getenv("HOSTNAME"));
+					userManager.getUserService(jobO.getUserId()).runJob(jobO);
+				}
 			}
 		}
 	}
@@ -600,19 +605,19 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		}
 	}
 
-//	public String runCommand(String[] command, String workingDir) {
-//		User user = getUser();
-//		if (user == null)
-//			return null;
-//		if (workingDir == null)
-//			workingDir = "";
-//		RemoteUserService con = userManager.getUserService(user.getId());
-//		if (con != null) {
-//			System.out.println("running command " + command[0]);
-//			return (String) con.runSystemCommand(command, workingDir);
-//		}
-//		return "";
-//	}
+	// public String runCommand(String[] command, String workingDir) {
+	// User user = getUser();
+	// if (user == null)
+	// return null;
+	// if (workingDir == null)
+	// workingDir = "";
+	// RemoteUserService con = userManager.getUserService(user.getId());
+	// if (con != null) {
+	// System.out.println("running command " + command[0]);
+	// return (String) con.runSystemCommand(command, workingDir);
+	// }
+	// return "";
+	// }
 
 	public void runQmod(Vector<String> jobs, String command, int user, String machine) {
 		RemoteUserService con = userManager.getUserService(user);
@@ -1213,10 +1218,10 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 			IPlantConnector.getInstance().runJob(job);
 			return job.getId();
 		}
-		System.out.println("Job took "+(new Date().getTime()-now.getTime())+" millseconds for mysql");
+		System.out.println("Job took " + (new Date().getTime() - now.getTime()) + " millseconds for mysql");
 		if (job.getWaitingFor() == 0)
 			runJob(user.getId(), job);
-		System.out.println("Job took "+(new Date().getTime()-now.getTime())+" millseconds");
+		System.out.println("Job took " + (new Date().getTime() - now.getTime()) + " millseconds");
 		return job.getId();
 	}
 
@@ -1673,55 +1678,55 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		SqlManager sql = SqlManager.getInstance();
 
 		// only try to hash if there are outputs, otherwise what is the point? I don't know what files to copy back over
-		if (job.getWrapper().getOutputs().size() > 0) {
-			String hash = userManager.getUserService(user.getId()).hashWrapper(job.getWrapper());
-			if (hash != null) {
-				Vector<String[]> jobs = sql.runQuery(sql.getPreparedStatement("Select j.id from job_hash h left join job j on j.id=h.job where j.user=" + job.getUserId() + " and h.hash=? ", hash));
-				HashMap<Integer, String> outputMap = new HashMap<>();
-				if (jobs.size() > 0) {
-					for (String[] entry : jobs) {
-						String jobId = entry[0];
-						System.out.println(jobId);
-						Vector<String[]> outputs = sql.runQuery(sql.getPreparedStatement("select job,path,hash,output,id from output_hash where job=" + jobId));
-						boolean allFailed = true;
-						boolean allPassed = true;
-						for (String[] out : outputs) {
-							String tempHash = userManager.getUserService(user.getId()).hashFile(new cgrb.eta.shared.etatype.File(out[1]));
-							if (!out[2].equals(tempHash)) {
-								allPassed = false;
-								sql.executeUpdate(sql.getPreparedStatement("delete from output_hash where id=" + out[4]));
-							} else {
-								outputMap.put(Integer.parseInt(out[3]), out[1]);
-								allFailed = false;
-							}
-						}
-						// if all failed delete the hash entrys from the db
-						if (allFailed) {
-							sql.executeUpdate(sql.getPreparedStatement("delete from job_hash where job=" + jobId));
-						} else if (allPassed) {
-							break;
-						}
-					}
-					// now we need to check to see if all the outputs from this job are existing in the map
-					Vector<Output> outputs = job.getWrapper().getOutputs();
-					if (outputMap.size() == outputs.size()) {
-						Vector<cgrb.eta.shared.etatype.File> files = job.getOutputFiles();
-						for (int i = 2; i < files.size(); i++) {
-							// link all the files
-							if (!files.get(i).getPath().equals(new cgrb.eta.shared.etatype.File(outputMap.get(outputs.get(i - 2).getId())).getPath()))
-								userManager.getUserService(user.getId()).link(new cgrb.eta.shared.etatype.File(files.get(i).getPath()), new cgrb.eta.shared.etatype.File(outputMap.get(outputs.get(i - 2).getId())));
-						}
-
-						// job finished
-						sql.executeUpdate(sql.getPreparedStatement("update job set status='Finished', machine='Used prev results' where id=" + job.getId()));
-						addEvent(new ETAEvent(ETAEvent.JOB, new JobEvent(JobEvent.FINISHED, job.getId())), job.getUserId());
-						return job.getId();
-					}
-				}
-
-				SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("insert into job_hash values (null," + job.getId() + ",?)", hash));
-			}
-		}
+		// if (false){//job.getWrapper().getOutputs().size() > 0&&job.getWaitingFor()==0) {
+		// String hash = userManager.getUserService(user.getId()).hashWrapper(job.getWrapper());
+		// if (hash != null) {
+		// Vector<String[]> jobs = sql.runQuery(sql.getPreparedStatement("Select j.id from job_hash h left join job j on j.id=h.job where j.user=" + job.getUserId() + " and h.hash=? ", hash));
+		// HashMap<Integer, String> outputMap = new HashMap<>();
+		// if (jobs.size() > 0) {
+		// for (String[] entry : jobs) {
+		// String jobId = entry[0];
+		// System.out.println(jobId);
+		// Vector<String[]> outputs = sql.runQuery(sql.getPreparedStatement("select job,path,hash,output,id from output_hash where job=" + jobId));
+		// boolean allFailed = true;
+		// boolean allPassed = true;
+		// for (String[] out : outputs) {
+		// String tempHash = userManager.getUserService(user.getId()).hashFile(new cgrb.eta.shared.etatype.File(out[1]));
+		// if (!out[2].equals(tempHash)) {
+		// allPassed = false;
+		// sql.executeUpdate(sql.getPreparedStatement("delete from output_hash where id=" + out[4]));
+		// } else {
+		// outputMap.put(Integer.parseInt(out[3]), out[1]);
+		// allFailed = false;
+		// }
+		// }
+		// // if all failed delete the hash entrys from the db
+		// if (allFailed) {
+		// sql.executeUpdate(sql.getPreparedStatement("delete from job_hash where job=" + jobId));
+		// } else if (allPassed) {
+		// break;
+		// }
+		// }
+		// // now we need to check to see if all the outputs from this job are existing in the map
+		// Vector<Output> outputs = job.getWrapper().getOutputs();
+		// if (outputMap.size() == outputs.size()) {
+		// Vector<cgrb.eta.shared.etatype.File> files = job.getOutputFiles();
+		// for (int i = 2; i < files.size(); i++) {
+		// // link all the files
+		// if (!files.get(i).getPath().equals(new cgrb.eta.shared.etatype.File(outputMap.get(outputs.get(i - 2).getId())).getPath()))
+		// userManager.getUserService(user.getId()).link(new cgrb.eta.shared.etatype.File(files.get(i).getPath()), new cgrb.eta.shared.etatype.File(outputMap.get(outputs.get(i - 2).getId())));
+		// }
+		//
+		// // job finished
+		// sql.executeUpdate(sql.getPreparedStatement("update job set status='Finished', machine='Used prev results' where id=" + job.getId()));
+		// addEvent(new ETAEvent(ETAEvent.JOB, new JobEvent(JobEvent.FINISHED, job.getId())), job.getUserId());
+		// return job.getId();
+		// }
+		// }
+		//
+		// SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("insert into job_hash values (null," + job.getId() + ",?)", hash));
+		// }
+		// }
 		if (job.getWaitingFor() == 0) {
 			userManager.getUserService(user.getId()).runJob(job);
 		} else {
@@ -2527,7 +2532,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		User user = getUser();
 		if (user == null)
 			return false;
-			userManager.getUserService(user.getId()).removeFiles(files);
+		userManager.getUserService(user.getId()).removeFiles(files);
 		return true;
 	}
 
@@ -2561,7 +2566,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return false;
 		}
-		return userManager.getUserService(user.getId()).moveFile( from,  to) ;
+		return userManager.getUserService(user.getId()).moveFile(from, to);
 	}
 
 	@Override
@@ -2570,7 +2575,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return false;
 		}
-		return userManager.getUserService(user.getId()).linkFile( from,  to) ;
+		return userManager.getUserService(user.getId()).linkFile(from, to);
 	}
 
 	@Override
@@ -2579,7 +2584,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return false;
 		}
-		return userManager.getUserService(user.getId()).copyFile( from,  to) ;
+		return userManager.getUserService(user.getId()).copyFile(from, to);
 	}
 
 	@Override
@@ -2588,7 +2593,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return false;
 		}
-		return userManager.getUserService(user.getId()).compressFiles(  type, files,  to) ;
+		return userManager.getUserService(user.getId()).compressFiles(type, files, to);
 	}
 
 	@Override
@@ -2597,7 +2602,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return false;
 		}
-		return userManager.getUserService(user.getId()).deCompressFile(  type,  archive,  where) ;
+		return userManager.getUserService(user.getId()).deCompressFile(type, archive, where);
 	}
 
 	@Override
@@ -2606,7 +2611,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return null;
 		}
-		return userManager.getUserService(user.getId()).getQueues() ;
+		return userManager.getUserService(user.getId()).getQueues();
 	}
 
 	@Override
@@ -2615,6 +2620,6 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		if (user == null) {
 			return null;
 		}
-		return userManager.getUserService(user.getId()).getThreadEnviroments() ;
+		return userManager.getUserService(user.getId()).getThreadEnviroments();
 	}
 }
