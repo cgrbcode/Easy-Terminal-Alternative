@@ -1,0 +1,7 @@
+#Thu Oct 13 22:07:47 PDT 2011
+eclipse.preferences.version=1
+jarsExcludedFromWebInfLib=/home/boyda/workspace/ETA/lib/commons-fileupload-1.2.2.jar|/home/boyda/workspace/ETA/lib/drmaa.jar|/home/boyda/workspace/ETA/lib/googlevoice.jar|/home/boyda/workspace/ETA/lib/gson-1.7.1.jar|/home/boyda/workspace/ETA/lib/gwt-html5-storage.jar|/home/boyda/workspace/ETA/lib/gwt-visualization.jar|/home/boyda/workspace/ETA/lib/mail.jar|/home/boyda/workspace/ETA/lib/mysql-connector-java-5.1.17-bin.jar|/home/boyda/workspace/ETA/lib/validation-api-1.0.0.GA-sources.jar|/home/boyda/workspace/ETA/lib/validation-api-1.0.0.GA.jar
+lastWarOutDir=/Users/boyda/Desktop/temp
+launchConfigExternalUrlPrefix=
+warSrcDir=war
+warSrcDirIsOutput=true

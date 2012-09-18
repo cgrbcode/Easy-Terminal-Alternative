@@ -99,7 +99,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This is the entry point to ETA.html, ServiceLogin.html, and ExternalLogin.html <br>
  * ETA is also a singleton object that provides a few methods.
  * 
- * test
  * @author Alexander Boyd
  */
 public class ETA implements EntryPoint {
