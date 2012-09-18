@@ -158,6 +158,7 @@ public class UserPipelineGrid extends Composite implements RowClickHandler<UserP
 		share.addButton(new Button("With someone").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				final MultipleUserSelect users = new MultipleUserSelect();
+				pipelines.preventClearing();
 				SC.ask("Select users to share with", users, new ValueListener<Boolean>() {
 					public void returned(Boolean ret) {
 						if (ret) {
@@ -167,6 +168,7 @@ public class UserPipelineGrid extends Composite implements RowClickHandler<UserP
 									wrapperService.sharePipeline(wrap.getPipelineId(), user.getId(), wrap.getName(), new MyAsyncCallback<Void>() {
 										@Override
 										public void success(Void result) {
+											pipelines.clearSelection();
 										}
 									});
 							}

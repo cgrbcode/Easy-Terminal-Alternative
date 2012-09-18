@@ -36,11 +36,11 @@ package cgrb.eta.client.button;
 
 import com.google.gwt.user.client.ui.Label;
 
-public class Seprator extends Label{
-public Seprator(){
-	addStyleName("eta-seprator");
-	setWidth("1px");
-}
-	
-	
+public class Seprator extends Label {
+
+	public Seprator() {
+		addStyleName("eta-seprator");
+		setWidth("1px");
+	}
+
 }

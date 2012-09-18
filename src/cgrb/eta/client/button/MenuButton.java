@@ -54,6 +54,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * Our base Menu for where buttons are added. 
+ * The Container has a VerticalPanel and a Horizontal Panel inside of it. Also initializes EventHandlers
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class MenuButton extends VerticalPanel implements MouseDownHandler, MouseUpHandler, ClickHandler, MouseOverHandler, MouseOutHandler {
 	private ClickHandler handler;
 	protected VerticalPanel menu;

@@ -38,7 +38,13 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.user.client.ui.Widget;
 
-
+/**
+ * Our base tab class. All other types of tabs extend this and use it's general methods. Big thing I'm noticing is canClose, 
+ * Which I assume is set to false for the Home tab.
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class Tab implements TabEventListener {
 	private String title;
 	private String icon;

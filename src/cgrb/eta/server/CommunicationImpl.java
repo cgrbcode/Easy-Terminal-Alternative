@@ -155,8 +155,8 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		this.getThreadLocalResponse().addCookie(cook);
 		return cook.getValue();
 	}
-	
-	public void preventJob(int jobId){
+
+	public void preventJob(int jobId) {
 		preventJobs.put(jobId, jobId);
 	}
 
@@ -420,11 +420,23 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		User user = getUser();
 		if (user == null)
 			return;
-		SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("delete from job where id=" + id));
-		SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("delete from job_value where id=" + id));
-		Job job = new Job();
-		job.setId(id);
-		addEvent(new ETAEvent(ETAEvent.ETA_TYPE, new ETATypeEvent<Job>(ETATypeEvent.REMOVED, job)), user.getId());
+		SqlManager sql = SqlManager.getInstance();
+		Job jobO = sql.getJob(id);
+		if (jobO.getPipeline() > 0) {
+			ArrayList<Job> children = sql.getChildJobs(id);
+			for (Job jo : children) {
+				deleteJob(jo.getId());
+			}
+		}
+		sql.executeUpdate(SqlManager.getInstance().getPreparedStatement("delete from job where id=" + id));
+		sql.executeUpdate(SqlManager.getInstance().getPreparedStatement("delete from job_value where job=" + id));
+		sql.executeUpdate(SqlManager.getInstance().getPreparedStatement("delete from job_hash where job=" + id));
+		sql.executeUpdate(SqlManager.getInstance().getPreparedStatement("delete from job_heap where job=" + id));
+		if (jobO.getParent() == 0) {
+			Job job = new Job();
+			job.setId(id);
+			addEvent(new ETAEvent(ETAEvent.ETA_TYPE, new ETATypeEvent<Job>(ETATypeEvent.REMOVED, job)), user.getId());
+		}
 		deleteSTDJobFiles(id);
 	}
 

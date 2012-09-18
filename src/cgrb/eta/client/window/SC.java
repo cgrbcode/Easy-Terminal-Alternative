@@ -54,10 +54,20 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
+/**
+ * The methods in this class seems to be a bunch of commonly used bits of code for when questions are asked. Contains a bunch of overloaded methods.
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class SC {
 	private static final SQLServiceAsync sqlService = (SQLServiceAsync) GWT.create(SQLService.class);
-
+	/**
+	 * Creates a question box that takes a text input, and passes it to the input listener
+	 * 
+	 * @param message	The message to be asked.
+	 * @param listener	The listener which is awaiting the text response.
+	 */
 	public static void ask(String message,final ValueListener<String> listener){
 		VerticalPanel panel = new VerticalPanel();
 		final Window window;
@@ -86,7 +96,17 @@ public class SC {
 		panel.add(buttons);
 		window.showWindow();
 	}
-	
+	/**
+	 * Asks a user if they would like to do something, like a confirmation.
+	 * 
+	 * Creates a new Window, adds some buttons to a panel and then throws the panel in the window. 
+	 * 
+	 * @param title	Title of the window.
+	 * @param message	Message that the window will ask the user.
+	 * @param listener	The listener that is waiting for a yes/no response.
+	 * @see cgrb.eta.client.window.Window
+	 * @see cgrb.eta.client.button.Filler
+	 */
 	public static void ask(String title,String message,final ValueListener<Boolean> listener){
 		VerticalPanel panel = new VerticalPanel();
 		final Window window;
@@ -123,6 +143,14 @@ public class SC {
 		window.showWindow();
 	}
 	
+	/**
+	 * Takes in an integer value to be passed when rating something (presumably a wrapper?)
+	 * 
+	 * @param what	The thing that is being rated and the string that presents it.
+	 * @param rating	The integer value which represents the rating itself.
+	 * @param listener	The listener which is awaiting the integer response.
+	 * @see cgrb.eta.client.window.Window
+	 */
 	public static void getRating(String what,int rating,final ValueListener<Integer> listener){
 		VerticalPanel panel = new VerticalPanel();
 		final Window window;
@@ -173,6 +201,12 @@ public class SC {
 		window.showWindow();
 		
 	}	
+	/**
+	 * Creates a window and displays the passed stuff.
+	 * 
+	 * @param message	A string to display
+	 * @param content	A widget to display
+	 */
 	public static void show(String message,Widget content){
 		VerticalPanel panel = new VerticalPanel();
 		panel.add(content);
@@ -191,6 +225,7 @@ public class SC {
 		window.showWindow();
 	}
 	
+
 	public static void ask(String message,Widget content,final ValueListener<Boolean> listener){
 		VerticalPanel panel = new VerticalPanel();
 		panel.add(content);

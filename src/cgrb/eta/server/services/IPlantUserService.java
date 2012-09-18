@@ -608,12 +608,12 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public String[] getQueues() {
-		return new String[] {};
+		return new String[] {"queuesss"};
 	}
 
 	@Override
 	public String[] getThreadEnviroments() {
-		return new String[] {};
+		return new String[] {"threadsss"};
 	}
 
 	public boolean setupIRods(String password) {

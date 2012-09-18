@@ -46,6 +46,11 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class ImgMenuButton extends MenuButton {
 
 	private Image icon;

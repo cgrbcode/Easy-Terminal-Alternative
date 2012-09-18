@@ -888,8 +888,7 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 	@Override
 	public void removeFiles(Vector<cgrb.eta.shared.etatype.File> files) {
 		for(cgrb.eta.shared.etatype.File file:files){
-			System.out.println("removing file "+file.getPath());
-			new File(file.getPath()).delete();
+			runSystemCommand(new String[] { "rm", "-rf", file.getPath() }, "");
 		}
 	}
 

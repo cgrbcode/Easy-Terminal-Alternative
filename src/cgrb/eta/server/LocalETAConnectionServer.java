@@ -126,28 +126,39 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 		while (true) {
 			try {
 				// System.out.println("Waiting for connections.");
-				Socket client = socket.accept();
-				byte[] info = new byte[31];
-				client.getInputStream().read(info);
-				byte mode = info[0];
-				info[0] = 0;
-				switch (mode) {
-				case ETA_START:
-					etaStartConnected(client, info);
-					break;
-				case ETA_SUBMIT:
-					etaSubmitConnected(client, info);
-					break;
-				case ETA_MONITOR:
-					etaMonitorConnected(client, info);
-					break;
-				case ETA_UTIL:
-					etaUtilConnected(client, info);
-					break;
-				default:
-					client.close();
-					System.out.println("old or unauthorized connection");
-				}
+				final Socket client = socket.accept();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							byte[] info = new byte[31];
+							client.getInputStream().read(info);
+							byte mode = info[0];
+							info[0] = 0;
+							switch (mode) {
+							case ETA_START:
+								etaStartConnected(client, info);
+								break;
+							case ETA_SUBMIT:
+								etaSubmitConnected(client, info);
+								break;
+							case ETA_MONITOR:
+								etaMonitorConnected(client, info);
+								break;
+							case ETA_UTIL:
+								etaUtilConnected(client, info);
+								break;
+							default:
+								client.close();
+								System.out.println("old or unauthorized connection");
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}).start();
 				// if (client.isConnected())
 				// System.out.println("Accepted a connection from: " + client.getInetAddress());
 			} catch (Exception e) {
@@ -226,9 +237,11 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 		String jobNumber = "";
 		char letter;
 		try {
+			System.out.println("reading job for user " + user.getName());
 			while ((letter = (char) client.getInputStream().read()) != '\n' && letter > -1) {
 				jobNumber += letter;
 			}
+			System.out.println("job #" + jobNumber);
 		} catch (IOException e) {
 			return;
 		}
@@ -393,7 +406,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 	public Job jobFinishedWithNext(int jobId, int exitCode) {
 		SqlManager.getInstance().executeUpdate(SqlManager.getInstance().getPreparedStatement("update job set exitCode=" + exitCode + " where id=" + jobId));
 		if (exitCode == 0) {
-			Job jobO=null;
+			Job jobO = null;
 			SqlManager sql = SqlManager.getInstance();
 			Vector<String[]> jobs = sql.runQuery(sql.getPreparedStatement("Select id from job where waiting_for=" + jobId));
 			for (String[] job : jobs) {
@@ -402,7 +415,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 					break;
 				}
 			}
-			if(jobO!=null){
+			if (jobO != null) {
 				CommunicationImpl.getInstance().preventJob(jobO.getId());
 			}
 			JobEvent evt = new JobEvent(JobEvent.FINISHED, jobId);

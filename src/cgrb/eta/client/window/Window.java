@@ -56,7 +56,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
+/**
+ * Window is used for showing things over other things. Such as viewing a file in our folders.
+ * 
+ * The java file itself handles all the stylings and placement of our window. Probably the only neat function is the add widget, in which you can
+ * add any other widget into our window.
+ * 
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class Window {
 	Label title;
 	HTML modalMask = new HTML();
@@ -67,7 +76,13 @@ public class Window {
 	private int x_start = 0;
 	private int y_start = 0;
 	private MouseMoveHandler moveHandler;
-
+	/**
+	 * Only constructor. Builds our window
+	 * 
+	 * @param title	Title of the window, displayed at the top.
+	 * @param content	Any widget that needs to be added to the FlowPanel should be passed as content.
+	 * @param isModal	The boolean representing if you need to interact with the window or not before returning.
+	 */
 	public Window(String title, Widget content,boolean isModal) {
 		this.isModal=isModal;
 		this.title = new Label(title);
@@ -185,7 +200,12 @@ public class Window {
 		RootPanel.get().add(modalMask);
 		RootPanel.get().add(outside);
 	}
-
+	/**
+	 * Adds a widget to our bar, our bar is the bottom of the window and can be used for buttons or other neat things.
+	 * 
+	 * 
+	 * @param wid The widget to be passed and added to our bottom bar.
+	 */
 	public void addBar(Widget wid) {
 		bar.add(wid);
 	}
