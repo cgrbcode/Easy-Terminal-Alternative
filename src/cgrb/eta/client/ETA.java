@@ -317,6 +317,27 @@ public class ETA implements EntryPoint {
 				addTab(new NewRequestTab());
 			}
 		}));
+		
+		//creating another button, addint it to tab, trying to ask the server for a style to change it to.
+		final MenuButton hello = new MenuButton("World");
+		create.addButton(new Button("Display Queue").setClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event) {
+				//change this from queues to something that I maybe add.
+				communicationService.getQueues(new AsyncCallback<String[]>(){
+					public void onSuccess(String[] result){
+						hello.addStyleName(result[0]);
+						
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+				});
+					
+				
+			}
+		}));
 		create.addButton(new Button("Wrapper").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				// new UserSelector(null);
