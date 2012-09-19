@@ -982,85 +982,37 @@ height: 25px;
 	-moz-animation-name: expandsearch;
 }
 
-@
--webkit-keyframes expandsearchr {
-	to {background-color: #84B4EA;
+@-webkit-keyframes expandsearchr {
+	to {background-color: #84B4EA;}
+	from { background-color: white;}
 }
-
-from {
-	background-color: white;
+@-webkit-keyframes expandsearchinputr {
+	to {width: 50px;}
+	from {width: 130px;}
 }
-
+@-webkit-keyframes expandsearch {
+	from {background-color: #84B4EA;}
+	to {background-color: white;}
 }
-@
--webkit-keyframes expandsearchinputr {
-	to {width: 50px;
+@-webkit-keyframes expandsearchinput {
+	from {width: 50px;}
+	to {width: 130px;}
 }
-
-from {
-	width: 130px;
+@-moz-keyframes expandsearchr {
+	to {background-color: #84B4EA;}
+	from {background-color: white;}
 }
-
+@-moz-keyframes expandsearchinputr {
+	to {width: 50px;}
+	from {width: 130px;}
 }
-@
--webkit-keyframes expandsearch {
-	from {background-color: #84B4EA;
+@-moz-keyframes expandsearch {
+	from {background-color: #84B4EA;}
+	to {background-color: white;}
 }
-
-to {
-	background-color: white;
-}
-
-}
-@
--webkit-keyframes expandsearchinput {
-	from {width: 50px;
-}
-
-to {
-	width: 130px;
-}
-
-}
-@
--moz-keyframes expandsearchr {
-	to {background-color: #84B4EA;
-}
-
-from {
-	background-color: white;
-}
-
-}
-@
--moz-keyframes expandsearchinputr {
-	to {width: 50px;
-}
-
-from {
-	width: 130px;
-}
-
-}
-@
--moz-keyframes expandsearch {
-	from {background-color: #84B4EA;
-}
-
-to {
-	background-color: white;
-}
-
-}
-@
--moz-keyframes expandsearchinput {
-	from {width: 50px;
-}
-
-to {
-	width: 130px;
-}
-
+@-moz-keyframes expandsearchinput {
+	from {width: 50px;}
+	to {width: 130px;}
 }
 .search-focus .search-input {
 	border: none;
