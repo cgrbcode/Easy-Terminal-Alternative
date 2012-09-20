@@ -34,7 +34,6 @@
  */
 package cgrb.eta.client.tabset;
 
-import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Vector;
 
