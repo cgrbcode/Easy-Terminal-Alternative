@@ -37,8 +37,10 @@ package cgrb.eta.client.tabs;
 import java.util.HashMap;
 import java.util.Vector;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -94,6 +96,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 	private SimpleLabel commandRun;
 	ListBox clustersBox;
 	private int waitingFor=0;
+	private FlowPanel jobOptions;
 
 	private final WrapperServiceAsync wrapperService = (WrapperServiceAsync) GWT.create(WrapperService.class);
 	private CheckButton notifyMe;
@@ -104,6 +107,8 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		pane = new VerticalPanel();
 		bar = new HorizontalPanel();
 		setPane(pane);
+		jobOptions = new FlowPanel();
+		this.setAnimatedPanel(jobOptions);
 		if (wrapper == 0)
 			return;
 		wrapperService.getWrapperFromId(wrapper, new MyAsyncCallback<Wrapper>() {
@@ -120,6 +125,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		pane = new VerticalPanel();
 		bar = new HorizontalPanel();
 		setPane(pane);
+		this.setAnimatedPanel(jobOptions);
 		setup(wrapper);
 	}
 
@@ -130,6 +136,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		bar = new HorizontalPanel();
 		setPane(pane);
 		setup(job.getWrapper());
+		this.setAnimatedPanel(jobOptions);
 		workingFolder.setText(job.getWorkingDir());
 	}
 
@@ -139,16 +146,57 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		pane.clear();
 		options = new JobOptions();
 		// make the bar
-		MenuButton programButton = new MenuButton("Program");
-		programButton.addButton(new LabelButton(wrapper.getProgram()));
 		usersNot = new MultipleUserSelect();
-		MenuButton descButton = new MenuButton("Description");
-		descButton.addButton(new LabelButton(wrapper.getDescription()));
+		SimpleLabel descTitle = new SimpleLabel("Description:");
+		SimpleLabel descText = new SimpleLabel(wrapper.getDescription());
+		descTitle.setStyleDependentName("anioptions", true);
+		
 
-		MenuButton workingDir = new MenuButton("Working Dir");
+		
+	
+		//setup hidden options
+		FlowPanel description = new FlowPanel();
+		description.setStyleName("animated-options-floats");
+		FlowPanel folder = new FlowPanel();
+		folder.setStyleName("animated-options-floats");
+		FlowPanel wrapOptions = new FlowPanel();
+		wrapOptions.setStyleName("animated-options-floats");
+		FlowPanel notifications = new FlowPanel();
+		notifications.setStyleName("animated-options-floats");
+		
+		//description pane
+		description.add(new SimpleLabel("Program: " + wrapper.getProgram()));
+		Button change = new Button("Change Title").setClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				SC.ask("What do you want to name this job?", new ValueListener<String>() {
+					public void returned(String ret) {
+						jobName.setText(ret);
+					}
+				});
+			}
+		});
+		change.getElement().setAttribute("float", "left");
+		description.add(change);
+		description.add(descTitle);
+		description.add(descText);
+		
+		//wrapperOptions pane
+		wrapOptions.add(new Button("SGE Options").setClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				options.show();
+			}
+		}));
+		saveStd = new CheckButton("Save STD");
+		wrapOptions.add(saveStd);
+	
+		
+		
+		//Folder pane
+		SimpleLabel workingDir = new SimpleLabel("Working Dir");
+		folder.add(workingDir);
 		workingFolder = new LabelButton(FileBrowser.lastFolder);
-		workingDir.addButton(workingFolder);
-		workingDir.addButton(new Button("Change").setClickHandler(new ClickHandler() {
+		folder.add(workingFolder);
+		folder.add(new Button("Change").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				new FileSelector(new ItemSelector() {
 					public void itemSelected(String[] items) {
@@ -159,52 +207,58 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 				}, FileBrowser.FOLDER_SELECT);
 			}
 		}));
-
-		MenuButton notifyMenu = new MenuButton("Notifications");
+		folder.add(saveStd = new CheckButton("Save STD"));
+		
+		jobOptions.add(description);
+		jobOptions.add(wrapOptions);
+		jobOptions.add(folder);
+		jobOptions.add(notifications);
+		
+		//notifypane
+		SimpleLabel notifyMenu = new SimpleLabel("Notifications");
 		notifyMe = new CheckButton("Notify me");
-		notifyMenu.addButton(notifyMe);
+		notifications.add(notifyMenu);
+		notifications.add(notifyMe);
 
-		notifyMenu.addButton(new Button("Notify Others").setClickHandler(new ClickHandler() {
+		notifications.add(new Button("Notify Others").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				SC.ask("Select the users you want to notify", usersNot, null);
 			}
 		}));
-
-		MenuButton jobOptions = new MenuButton("Job Options");
-		jobOptions.addButton(new Button("SGE Options").setClickHandler(new ClickHandler() {
+		
+		/*
+			
+		jobOptions.add(new Button("SGE Options").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				options.show();
 			}
 		}));
-		jobOptions.addButton(new SeperatorButton());
-		jobOptions.addButton(new LabelButton("Job name"));
-		jobName = new LabelButton(wrapper.getName());
-		jobOptions.addButton(jobName);
-		jobOptions.addButton(new Button("Change").setClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				SC.ask("What do you want to name this job?", new ValueListener<String>() {
-					public void returned(String ret) {
-						jobName.setText(ret);
-					}
-				});
-			}
-		}));
-		jobOptions.addButton(new SeperatorButton());
+		jobOptions.add(new SeperatorButton());
+		LabelButton jobname = new LabelButton("Job name");
+		jobname.setStyleDependentName("anioptions", true);
+		jobOptions.add(jobname);
+		
+		jobOptions.add(new SeperatorButton());
 		saveStd = new CheckButton("Save STD");
-		jobOptions.addButton(saveStd);
-
-		bar.add(programButton);
+		jobOptions.add(saveStd);
+		
+		
+		jobOptions.add(programButton);
 		bar.add(new Seprator());
-		bar.add(descButton);
-		bar.add(new Seprator());
-		bar.add(workingDir);
-		bar.add(new Seprator());
-		bar.add(notifyMenu);
-		bar.add(new Seprator());
-		bar.add(jobOptions);
-		bar.add(new Seprator());
+		jobOptions.add(new Seprator());
+		jobOptions.add(workingDir);
+		jobOptions.add(new Seprator());
+		jobOptions.add(notifyMenu);
+		jobOptions.add(new Seprator());
+		
+		
+		jobOptions.add(descTitle);
+		jobOptions.add(descText);
+		jobOptions.add(new SimpleLabel(wrapper.getProgram()));
+		jobOptions.add(new Seprator());;
+		*/
 		bar.add(new SimpleLabel("Wrapper created by: " + wrapper.getCreator()).setColor("white").setFontSize(10));
-
+	
 		// the panels
 		HorizontalPanel top = new HorizontalPanel();
 		top.setStyleName("wr-top");
@@ -361,5 +415,49 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 			waitingFor=job.getId();
 		}
 	}
+	
+	
+	boolean advancedShown = false;
+
+	public void showPipelineView() {
+		if (!advancedShown)
+			new ShowAnimation().run(2000);
+		else
+			new HideAnimation().run(2000);
+		advancedShown = !advancedShown;
+	}
+
+	private class ShowAnimation extends Animation {
+		public ShowAnimation(){
+			jobOptions.setVisible(true);
+		}
+		@Override
+		protected void onUpdate(double progress) {
+			jobOptions.getElement().getStyle().setRight((1 - progress) * 95, Unit.PCT);
+		}
+
+		@Override
+		public void cancel() {
+			super.cancel();
+			jobOptions.getElement().getStyle().setRight(95, Unit.PCT);
+		}
+	}
+
+	private class HideAnimation extends Animation {
+		public HideAnimation(){
+		}
+		@Override
+		protected void onUpdate(double progress) {
+			jobOptions.getElement().getStyle().setRight((progress) * 95, Unit.PCT);
+		}
+
+		@Override
+		public void cancel() {
+			super.cancel();
+			jobOptions.getElement().getStyle().setRight(0, Unit.PCT);
+		}
+	}
+	
+	
 
 }

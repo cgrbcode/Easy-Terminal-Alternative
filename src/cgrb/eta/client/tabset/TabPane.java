@@ -34,13 +34,18 @@
  */
 package cgrb.eta.client.tabset;
 
+import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Vector;
 
+import cgrb.eta.client.button.Button;
 import cgrb.eta.client.button.Filler;
 import cgrb.eta.client.button.Seprator;
-
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -74,6 +79,8 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 	private HandlerRegistration handler;
 	private TabManager manager = null;
 	private HashMap<String, Tab> tabMap;
+	private final Button showOptions;
+	private FlowPanel animationHolder;
 
 	public TabPane() {
 		tabMap = new HashMap<String, Tab>();
@@ -96,8 +103,8 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 		tabHeads.setWidth("100%");
 		tabHeads.setHeight("25px");
 		tabHeads.setStyleName("tab-heads");
-//		tabHeads.setWidth("100px");
-		//tabHeads.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
+		// tabHeads.setWidth("100px");
+		// tabHeads.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
 		tabBar.setHeight("25px");
 		bottomBar.setHeight("25px");
 		lowerPanel.setStyleName("tab-bar");
@@ -138,6 +145,15 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 				content.setHeight(Window.getClientHeight() - content.getAbsoluteTop() - 10 + "px");
 			}
 		});
+		animationHolder = new FlowPanel();
+		animationHolder.setStylePrimaryName("animated-options-panel");
+		showOptions = new Button("Show Options");
+		showOptions.setClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				animateOptionsView(showOptions);
+			}
+		});
+
 	}
 
 	@Override
@@ -152,7 +168,7 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 			return;
 		}
 		tabMap.put(tab.getId(), tab);
-		if(tabs.size()==0)
+		if (tabs.size() == 0)
 			tab.getHead().addStyleName("first-tab");
 		tabs.add(tab);
 		tabHeads.add(tab.getHead());
@@ -213,24 +229,26 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 	Timer t;
 
 	private void loadTab(final Tab tab) {
-		if (tabs.size() == 1) {
-			t = new Timer() {
-				@Override
-				public void run() {
-					content.clear();
-					content.add(tab.getPane());
-					content.getElement().getStyle().setOverflow(Overflow.AUTO);
-				}
-			};
-			t.schedule(100);
-		} else {
-			if (t != null) {
-				t.cancel();
-				t = null;
-			}
-		}
+		// if (tabs.size() == 1) {
+		// t = new Timer() {
+		// @Override
+		// public void run() {
+		// content.clear();
+		// content.add(tab.getPane());
+		// content.getElement().getStyle().setOverflow(Overflow.AUTO);
+		// }
+		// };
+		// t.schedule(100);
+		// } else {
+		// if (t != null) {
+		// t.cancel();
+		// t = null;
+		// }
+		// }
 		content.clear();
+
 		content.add(tab.getPane());
+		content.add(animationHolder);
 		content.getElement().getStyle().setOverflow(Overflow.AUTO);
 
 		if (currentTab != null) {
@@ -243,6 +261,12 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 			tabBar.add(new Filler(10));
 			tabBar.add(new Seprator());
 			tabBar.add(currentTab.getBar());
+		}
+		if (currentTab.getAnimatedPanel() != null) {
+			animationHolder.clear();
+			tabBar.add(showOptions);
+			tabBar.add(new Seprator());
+			animationHolder.add(tab.getAnimatedPanel());
 		}
 	}
 
@@ -336,5 +360,53 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 	 */
 	public Tab getTab(String ident) {
 		return tabMap.get(ident);
+	}
+
+	boolean advancedShown = false;
+
+	private void animateOptionsView(Button options) {
+		if (!advancedShown) {
+			new ShowAnimation().run(1000);
+			options.setText("Hide Options");
+		} else {
+			new HideAnimation().run(1000);
+			options.setText("Show Options");
+		}
+		advancedShown = !advancedShown;
+	}
+
+	private class ShowAnimation extends Animation {
+
+		public ShowAnimation() {
+		}
+
+		@Override
+		protected void onUpdate(double progress) {
+			animationHolder.getElement().getStyle().setHeight((progress) * 40, Unit.PCT);
+
+		}
+
+		@Override
+		public void cancel() {
+			super.cancel();
+			animationHolder.getElement().getStyle().setHeight(40, Unit.PCT);
+		}
+
+	}
+
+	private class HideAnimation extends Animation {
+		public HideAnimation() {
+		}
+
+		@Override
+		protected void onUpdate(double progress) {
+			animationHolder.getElement().getStyle().setHeight((1 - progress) * 40, Unit.PCT);
+		}
+
+		@Override
+		public void cancel() {
+			super.cancel();
+			animationHolder.getElement().getStyle().setHeight(0, Unit.PCT);
+		}
 	}
 }

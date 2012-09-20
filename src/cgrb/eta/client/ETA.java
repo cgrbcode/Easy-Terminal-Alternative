@@ -322,7 +322,7 @@ public class ETA implements EntryPoint {
 				// new UserSelector(null);
 				addTab(new WrapperCreator());
 			}
-		}));
+		})); 
 		create.addButton(new Button("Pipeline").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				addTab(new PipelineCreator());

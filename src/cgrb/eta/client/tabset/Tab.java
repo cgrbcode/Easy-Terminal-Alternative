@@ -36,6 +36,7 @@ package cgrb.eta.client.tabset;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -53,6 +54,7 @@ public class Tab implements TabEventListener {
 	private boolean canClose = false;
 	private TabEventListener listener;
 	private String tooltip;
+	private Widget animatedPanel;
 
 	public Tab() {
 	}
@@ -132,6 +134,14 @@ public class Tab implements TabEventListener {
 
 	public void setListener(TabEventListener listener) {
 		this.listener = listener;
+	}
+	
+	public Widget getAnimatedPanel(){
+		return this.animatedPanel;
+	}
+	
+	public void setAnimatedPanel(Widget animatedPanel) {
+		this.animatedPanel = animatedPanel;
 	}
 
 	/**

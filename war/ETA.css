@@ -83,6 +83,18 @@ body,html {
 .tab-content {
 	border: 2px solid #5993D4;
 	border-top: 0;
+	position: relative;
+}
+.animated-options-panel{
+	position: absolute;
+	width: 100%;
+	top: 0%;
+	height: 0%;
+	background-color: #E6E7E9;
+	overflow: hidden;
+}
+.animated-options-floats{
+	float: left;
 }
 .tab-heads{
 	width:100%;

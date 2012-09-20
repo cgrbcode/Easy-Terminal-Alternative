@@ -36,7 +36,7 @@ package cgrb.eta.client.tabset;
 
 import com.google.gwt.user.client.ui.Widget;
 /**
- * ETA tabs can be closed. That seems to be the primary difference in this extension.
+
  * 
  * @author Alexander Boyd
  *
