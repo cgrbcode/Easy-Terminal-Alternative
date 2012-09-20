@@ -255,7 +255,16 @@ public class ETA implements EntryPoint {
 				addTab(new ResultsTab());
 			}
 		}));
-
+		
+		ImgMenuButton world = new ImgMenuButton(Resources.INSTANCE.resultsSmall());
+		view.addButton(new Button("WorldStuff").setClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				//do something, ask the server for something
+				
+			}
+		});
+		
+ 
 		mainTabSet.addTopButton(view);
 		mainTabSet.addTopButton(new Seprator());
 

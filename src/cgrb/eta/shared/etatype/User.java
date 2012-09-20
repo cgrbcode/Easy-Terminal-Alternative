@@ -37,8 +37,7 @@ package cgrb.eta.shared.etatype;
 import java.util.HashMap;
 import java.util.Vector;
 
-
-public class User extends ETAType{
+public class User extends ETAType {
 
 	/**
 	 * 
@@ -54,19 +53,21 @@ public class User extends ETAType{
 	private boolean serviceConnected;
 	private Vector<Cluster> clusters;
 	private String password;
-	
-	private HashMap<String,String> settings;
-	
-	public User(){}
-	
-	public User(String name,String email,String username,int permission){
-		this.name=name;
-		this.email=email;
-		this.username=username;
-		this.permissionLevel=permission;
-		settings= new HashMap<String, String>();
-		clusters=new Vector<Cluster>();
+
+	private HashMap<String, String> settings;
+
+	public User() {
 	}
+
+	public User(String name, String email, String username, int permission) {
+		this.name = name;
+		this.email = email;
+		this.username = username;
+		this.permissionLevel = permission;
+		settings = new HashMap<String, String>();
+		clusters = new Vector<Cluster>();
+	}
+
 	public void setPermissionLevel(int permissionLevel) {
 		this.permissionLevel = permissionLevel;
 	}
@@ -82,12 +83,12 @@ public class User extends ETAType{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	public void setSetting(String setting, String value) {
 		settings.put(setting, value);
 	}
 
-	public String getSetting(String setting){
+	public String getSetting(String setting) {
 		return settings.get(setting);
 	}
 
@@ -107,66 +108,65 @@ public class User extends ETAType{
 		return username;
 	}
 
+	public String getPhone() {
+		return phone;
+	}
 
-		public String getPhone() {
-			return phone;
-		}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-		public void setPhone(String phone) {
-			this.phone = phone;
-		}
+	public boolean isnEmail() {
+		return nEmail;
+	}
 
-		public boolean isnEmail() {
-			return nEmail;
-		}
+	public void setnEmail(boolean nEmail) {
+		this.nEmail = nEmail;
+	}
 
-		public void setnEmail(boolean nEmail) {
-			this.nEmail = nEmail;
-		}
+	public boolean isnPhone() {
+		return nPhone;
+	}
 
-		public boolean isnPhone() {
-			return nPhone;
-		}
+	public void setnPhone(boolean nPhone) {
+		this.nPhone = nPhone;
+	}
 
-		public void setnPhone(boolean nPhone) {
-			this.nPhone = nPhone;
-		}
+	/**
+	 * @return
+	 */
+	public boolean isServiceConnected() {
+		return serviceConnected;
+	}
 
-		/**
-		 * @return
-		 */
-		public boolean isServiceConnected() {
-			return serviceConnected;
-		}
+	/**
+	 * @param b
+	 */
+	public void setServiceConnected(boolean b) {
+		serviceConnected = b;
+	}
 
-		/**
-		 * @param b
-		 */
-		public void setServiceConnected(boolean b) {
-			serviceConnected=b;
-		}
+	/**
+	 * @return
+	 */
+	public HashMap<String, String> getSettings() {
+		return settings;
+	}
 
-		/**
-		 * @return
-		 */
-		public HashMap<String, String> getSettings() {
-			return settings;
-		}
-	
-		public void addCluster(Cluster cluster){
-			clusters.add(cluster);
-		}
+	public void addCluster(Cluster cluster) {
+		clusters.add(cluster);
+	}
 
-		public Vector<Cluster> getClusters() {
-			return clusters;
-		}
+	public Vector<Cluster> getClusters() {
+		return clusters;
+	}
 
-		public String getPassword() {
-			return password;
-		}
+	public String getPassword() {
+		return password;
+	}
 
-		public void setPassword(String password) {
-			this.password = password;
-		}
-		
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 }
