@@ -83,8 +83,6 @@ public interface CommunicationService extends RpcService {
 	//methods that I think should be removed
 	public Vector<QJob> getJobsForMachine(String machine);
 	String[] getMachines();
-	String[][] getQstatInfo(String[] machines);
-	String[] getQstatMachines();
 
 	
 	

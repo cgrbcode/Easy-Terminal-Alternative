@@ -59,8 +59,6 @@ public interface CommunicationServiceAsync {
 
 	void getMachines(AsyncCallback<String[]> callback);
 
-	void getQstatInfo(String[] machines, AsyncCallback<String[][]> callback);
-
 	void getResourcesForMachine(String machine, String[] resources, AsyncCallback<String[][]> callback);
 
 	void isInstalled( String program, AsyncCallback<Boolean> callback);
@@ -80,8 +78,6 @@ public interface CommunicationServiceAsync {
 	void getETASettings(AsyncCallback<String[]> callback);
 
 	void saveETASettings(String[] settings, AsyncCallback<String> callback);
-
-	void getQstatMachines(AsyncCallback<String[]> callback);
 
 	void saveRequest(String type, String summary, String description, AsyncCallback<Integer> callback);
 

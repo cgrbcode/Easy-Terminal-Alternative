@@ -103,6 +103,7 @@ public class SqlQueryFolder {
 				try {
 					LineNumberReader lineReader = new LineNumberReader(new FileReader(file));
 					while (( lineReader.readLine()) != null);
+					lineReader.close();
           return ""+lineReader.getLineNumber();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

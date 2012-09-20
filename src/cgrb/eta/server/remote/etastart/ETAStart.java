@@ -860,6 +860,7 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 			}
 
 			sb.deleteCharAt(sb.length() - 1);
+			fileHandler.close();
 			String lastLine = sb.reverse().toString();
 			return lastLine;
 		} catch (java.io.FileNotFoundException e) {

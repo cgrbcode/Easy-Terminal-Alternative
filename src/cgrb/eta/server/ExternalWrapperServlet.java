@@ -179,7 +179,7 @@ public class ExternalWrapperServlet extends HttpServlet {
 						}
 						resp.setContentType("text/html");
 						resp.getWriter().write(callBack + "(\"" + escape(html) + "\");");
-
+						reader.close();
 					} else {
 						// open an octect stream and download the file
 						File f = new File(filePath);
@@ -195,6 +195,7 @@ public class ExternalWrapperServlet extends HttpServlet {
 						while ((len = inputStream.read(buffer)) > 0) {
 							op.write(buffer, 0, len);
 						}
+						inputStream.close();
 						op.flush();
 						op.close();
 					}

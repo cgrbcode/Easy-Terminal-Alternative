@@ -228,22 +228,18 @@ public class WrappersTab extends ETATab implements RowClickHandler<Wrapper>,Drag
 	}
 
 	public void dragEnter(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void dragOver(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void dragLeave(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void drop(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
