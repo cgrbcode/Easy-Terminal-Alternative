@@ -262,13 +262,11 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public String tail(String file, int lines) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String[] getCommandsInPath() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -279,13 +277,11 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public String generatePerlTemplate(Wrapper wrapper, File where) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String runPluginCommand(String[] command, String workingDir) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -362,7 +358,6 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public void saveEmail(String emailAddress) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -372,7 +367,6 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public String hashWrapper(Wrapper wrapper) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -399,7 +393,6 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public void removeResult(int jobId) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -419,7 +412,6 @@ public class IPlantUserService implements RemoteUserService {
 
 	@Override
 	public String downloadFile(String url) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -50,7 +50,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import cgrb.eta.server.CommunicationImpl;
-import cgrb.eta.server.GangliaParser;
 import cgrb.eta.server.Notifier;
 import cgrb.eta.server.settings.Setting;
 import cgrb.eta.server.settings.Settings;
@@ -61,7 +60,6 @@ import cgrb.eta.shared.RequestResponse;
 import cgrb.eta.shared.ResultSearchItem;
 import cgrb.eta.shared.ResultSettings;
 import cgrb.eta.shared.SearchResultItem;
-import cgrb.eta.shared.ServerSearchItem;
 import cgrb.eta.shared.WrapperSearchItem;
 import cgrb.eta.shared.etatype.Cluster;
 import cgrb.eta.shared.etatype.ETATypeEvent;
@@ -937,13 +935,13 @@ public class SqlManager {
 
 		// now get servers that are on the cloud
 		Vector<SearchResultItem> serverResults = new Vector<SearchResultItem>();
-		String[] machines = GangliaParser.getInstance().getMachines();
-		for (String machine : machines) {
-			if (machine.contains(search)) {
-				String[][] machinestat = GangliaParser.getInstance().getData(new String[] { machine });
-				serverResults.add(new ServerSearchItem(machine, machinestat[0][3], machinestat[0][2]));
-			}
-		}
+//		String[] machines = GangliaParser.getInstance().getMachines();
+//		for (String machine : machines) {
+//			if (machine.contains(search)) {
+//				String[][] machinestat = GangliaParser.getInstance().getData(new String[] { machine });
+//				serverResults.add(new ServerSearchItem(machine, machinestat[0][3], machinestat[0][2]));
+//			}
+//		}
 		if (serverResults.size() > 0)
 			results.put("Servers", serverResults);
 		return results;

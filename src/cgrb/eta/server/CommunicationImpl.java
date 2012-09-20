@@ -551,14 +551,6 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		return new Vector<QJob>();// QstatDataService.getService().getJobsForMachine(machine);
 	}
 
-	public String[] getQstatMachines() {
-		return GangliaParser.getInstance().getMachines();
-	}
-
-	public String[][] getQstatInfo(String[] machines) {
-		return GangliaParser.getInstance().getData(machines);
-	}
-
 	public String[][] getResourcesForMachine(String machine, String[] resources) {
 		return new String[][] {};// QstatDataService.getService().getResourcesForMachine(machine, resources);
 	}
@@ -1753,8 +1745,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 	}
 
 	public void runQmod(Vector<String> jobs, String wrapper) {
-		// TODO Auto-generated method stub
-
+		// TODO I should probably get rid of this method, but I don't know if I should ....
 	}
 
 	public void removeFavorite(int type, String value) {
@@ -2111,45 +2102,55 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 					if (results.size() == 0) {
 						// its new lets check the manifest to see if it has the the required info.
 						if (jsonO.getAsJsonPrimitive("name") == null) {
+							zipFile.close();
 							zipFileF.delete();
 							return "There must be a name field in the manifest";
 						}
 						if (jsonO.getAsJsonPrimitive("version") == null) {
+							zipFile.close();
 							zipFileF.delete();
 							return "There must be a version field in the manifest";
 						}
 						if (jsonO.getAsJsonPrimitive("description") == null) {
+							zipFile.close();
 							zipFileF.delete();
 							return "There must be a description field in the manifest";
 						}
 						if (jsonO.getAsJsonPrimitive("author") == null) {
+							zipFile.close();
 							zipFileF.delete();
 							return "There must be a author field in the manifest";
 						}
 						if (jsonO.getAsJsonPrimitive("type") == null) {
+							zipFile.close();
 							zipFileF.delete();
 							return "There must be a type field in the manifest";
 						}
 
 						JsonArray fileTypes = jsonO.getAsJsonArray("file-types");
 						if (fileTypes == null || fileTypes.size() == 0) {
+							zipFile.close();
 							zipFileF.delete();
 							return "Sorry there must be some file types associated with this plugin";
 						}
 						JsonArray permissions = jsonO.getAsJsonArray("permissions");
 						if (permissions == null || permissions.size() == 0) {
+							zipFile.close();
 							zipFileF.delete();
 							return "Sorry you must have some permissions otherwise this plugin can't do anything";
 						}
 						// all is good move all tests have passed!!
+						zipFile.close();
 						return "";
 					} else {
 						// there is already a plugin with this name
+						zipFile.close();
 						zipFileF.delete();
 						return "There is already a plugin with the same name. Delete it to install this one.";
 					}
 				}
 			}
+			zipFile.close();
 		} catch (FileNotFoundException e) {
 			zipFileF.delete();
 			return "Sorry for some reason the file wasn't uploaded correctly. Please try again.";
@@ -2205,9 +2206,11 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 						permissionsV.add(permissions.get(i).getAsString());
 					}
 					plugin.setPermissions(permissionsV);
+					zipFile.close();
 					return plugin;
 				}
 			}
+			zipFile.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
@@ -2286,6 +2289,7 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 
 			if (pluginFolder == null) {
 				zipFileF.delete();
+				zipFile.close();
 				return null;
 			}
 

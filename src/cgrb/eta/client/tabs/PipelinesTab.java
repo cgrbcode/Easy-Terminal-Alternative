@@ -201,22 +201,18 @@ public class PipelinesTab extends ETATab implements RowClickHandler<Pipeline>,Dr
 	}
 
 	public void dragEnter(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void dragOver(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void dragLeave(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void drop(ETAType record) {
-		// TODO Auto-generated method stub
 		
 	}
 

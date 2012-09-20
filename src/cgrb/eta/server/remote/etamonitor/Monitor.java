@@ -66,6 +66,7 @@ public class Monitor implements RemoteMonitorService {
 	private String hostname;
 	private final long MAX_TIME = 1000 * 60 * 60 * 6;// 6 hours
 
+	@SuppressWarnings("unused")
 	public Monitor(String[] command) {
 		Job jobO = null;
 		home = System.getenv("HOME");

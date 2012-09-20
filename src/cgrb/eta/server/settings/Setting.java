@@ -41,42 +41,45 @@ public class Setting implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8164639536619146233L;
-	private Object value;
+	private String value;
 
 	public Setting() {
 
 	}
 
-	public Setting(Object value) {
+	public Setting(String value) {
 		this.value = value;
 	}
 
+	public Setting(boolean value) {
+		this.value = ""+value;
+	}
 	public boolean getBooleanValue() {
 		if (value == null) {
 			return false;
 		}
-		return (Boolean) value;
+		return Boolean.parseBoolean(value);
 	}
 
 	public int getIntValue() {
 		if (value == null) {
 			return 0;
 		}
-		return (Integer) value;
+		return Integer.parseInt(value);
 	}
 
 	public String getStringValue() {
 		if (value == null) {
 			return "";
 		}
-		return (String) value;
+		return (String)value;
 	}
 
 	public Object getValue() {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 

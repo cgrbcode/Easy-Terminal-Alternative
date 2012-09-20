@@ -358,7 +358,6 @@ public class ETASubmit implements RemoteJobService {
 
 	@Override
 	public void eventOccured(ETAEvent event, int user) {
-		// TODO Auto-generated method stub
 		
 	}
 }

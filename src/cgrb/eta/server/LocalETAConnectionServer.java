@@ -154,7 +154,6 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 								System.out.println("old or unauthorized connection");
 							}
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}

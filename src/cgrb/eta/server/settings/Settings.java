@@ -34,13 +34,17 @@
  */
 package cgrb.eta.server.settings;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Settings {
 	private static Settings instance;
@@ -52,8 +56,6 @@ public class Settings {
 			if(rootDir.contains("jar")){
 				rootDir=rootDir.substring(0,rootDir.lastIndexOf('/'));
 			}
-			//rootDir=Thread.currentThread().getContextClassLoader().getResource("settings").getFile();
-			//rootDir = new File("").getAbsolutePath();//Settings.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceFirst("WEB-INF/classes", "").replaceFirst("/cgrb/spatafora/pipe/server/settings/Settings.class", "");
 			settingsFile=new File(rootDir+"/settings");
 			instance = new Settings();
 		}
@@ -81,7 +83,7 @@ public class Settings {
 		return s;
 	}
 
-	public Setting getSetting(String name, Object value) {
+	public Setting getSetting(String name, String value) {
 		Setting s = settings.get(name);
 		if (s == null) {
 			s = new Setting(value);
@@ -99,7 +101,6 @@ public class Settings {
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("settings file couldn't be created at:" + settingsFile.getAbsolutePath());
-				// System.exit(0);
 			}
 		}
 		try {
@@ -107,7 +108,29 @@ public class Settings {
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			settings = (HashMap<String, Setting>) ois.readObject();
 			ois.close();
+			fin.close();
+			//now save it in the new format
+			save();
 		} catch (Exception e) {
+			//okay this must be the newer type of settings file, read it in as just text
+			BufferedReader reader;
+			try {
+				reader = new BufferedReader(new FileReader(settingsFile));
+			String line;
+			while((line=reader.readLine())!=null){
+				if(line.contains(":")){
+					String[] temp=line.split(":");
+					if(temp.length>1)
+					settings.put(temp[0], new Setting(temp[1]));
+				}
+			}
+			reader.close();
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
 		}
 	}
 
@@ -121,15 +144,18 @@ public class Settings {
 			try {
 				settingsFile.createNewFile();
 			} catch (IOException e) {
-
 				return "settings couldn't be created:" + settingsFile.getAbsolutePath();
 			}
 		}
 		try {
-			FileOutputStream fout = new FileOutputStream(settingsFile);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(settings);
-			oos.close();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(settingsFile));
+			Iterator<String> it = settings.keySet().iterator();
+			while(it.hasNext()){
+				String key = it.next();
+				writer.write(key+":"+settings.get(key).getStringValue());
+				writer.newLine();
+			}
+			writer.close();
 		} catch (Exception e) {
 			return "counldn't save settings file";
 		}
