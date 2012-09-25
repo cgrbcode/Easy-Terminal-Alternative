@@ -90,11 +90,73 @@ body,html {
 	width: 100%;
 	top: 0%;
 	height: 0%;
-	background-color: #E6E7E9;
+	background-color: #D3D3D3;
 	overflow: hidden;
+	border-radius:0 0 5px 5px;
+	-moz-border-radius:0 0 5px 5px;
+	-moz-user-select: none;
 }
 .animated-options-floats{
 	float: left;
+	position: relative;
+	text-align: center;
+	margin: auto auto;
+	word-wrap: normal;
+	width: 250px;
+}
+.button-down-animate-button{
+	background-color: inherit;
+	padding: 8px;
+	font-size: 13px;
+	font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	color: #004D6A;
+	font-weight: bold;
+	
+}
+.button-down-options-button{
+	padding: 8px;
+	font-size: 13px;
+	font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	color: white;
+	font-weight: bold;
+	background-color: #1F617A;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 2px;
+	margin-top: 4px;
+	cursor: pointer;
+}
+.eta-button-options-button{
+	padding: 8px;
+	font-size: 13px;
+	font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	color: white;
+	font-weight: bold;
+	background-color: transparent;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 2px;
+	margin-top: 4px;
+	cursor: pointer;
+}
+.eta-button-animate-check{
+	background-color: inherit;
+	padding: 8px;
+	font-size: 13px;
+	font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	color: #004D6A;
+	font-weight: bold;
+	
+}
+
+.eta-button-animate-button{
+	background-color: inherit;
+	padding: 8px;
+	font-size: 13px;
+	font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+	color: #004D6A;
+	font-weight: bold;
+	
 }
 .tab-heads{
 	width:100%;
@@ -627,6 +689,10 @@ height: 25px;
 	height: 25px;
 	margin-left: 2px;
 	margin-right: 2px;
+}
+.eta-large-seprator {
+	height: 300px;
+	float: left;
 }
 
 .eta-button-menu .sub-menu {

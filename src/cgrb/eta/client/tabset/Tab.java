@@ -41,7 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Our base tab class. All other types of tabs extend this and use it's general methods. Big thing I'm noticing is canClose, 
- * Which I assume is set to false for the Home tab.
+ * Which I assume is set to false for the Home tab. AnimatedPanel is what we use in wrapper runnerright now, anytime we'd want to add a moving tab we
+ * would instantiate that variable.
  * 
  * @author Alexander Boyd
  *

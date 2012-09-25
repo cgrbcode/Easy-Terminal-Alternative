@@ -342,7 +342,7 @@ public class PipelineRunner extends ETATab {
 		}
 	}
 
-	private void closeMe() {
+	private void closeMe() { 
 		ETA.getInstance().removeTab(this);
 	}
 }

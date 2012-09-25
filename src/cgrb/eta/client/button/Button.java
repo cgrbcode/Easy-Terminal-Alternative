@@ -186,6 +186,12 @@ public class Button extends HorizontalPanel implements MouseDownHandler, MouseUp
 	 * @return This, the button that the ClickHandler is being added to.
 	 * 
 	 * @see ClickHandler
+		showOptions.onMouseOut(new MouseOutEvent() {
+			public void onMouseOut() {
+				// showOptions.setStyleDependentName("-options-button", true);
+				// do y
+			}
+		});
 	 */
 	public Button setClickHandler(ClickHandler handler) {
 		this.handler = handler;
