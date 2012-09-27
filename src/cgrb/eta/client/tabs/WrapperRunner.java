@@ -48,6 +48,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -83,6 +84,17 @@ import cgrb.eta.shared.wrapper.Input;
 import cgrb.eta.shared.wrapper.Output;
 import cgrb.eta.shared.wrapper.Wrapper;
 
+/**
+ * 
+ * The class which literally runs our wrappers.
+ * 
+ * It is also the information viewed when you open the runwrappers button from the left. It displays information about the selected wrapper and loads them into our contentpane. It also is the file which communicates with our server. All client->server wrapper computation runs through here.
+ * 
+ * @see WrapperServiceAsync.java
+ * 
+ * @author Alexander Boyd
+ * 
+ */
 public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper> {
 
 	private HorizontalPanel bar;
@@ -149,9 +161,10 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		options = new JobOptions();
 		// make the bar
 		usersNot = new MultipleUserSelect();
-		SimpleLabel descTitle = new SimpleLabel("Description:");
-		SimpleLabel descText = new SimpleLabel(wrapper.getDescription());
-		descTitle.setStyleDependentName("anioptions", true);
+		Label descTitle = new Label("Description:");
+		Label descText = new Label(wrapper.getDescription());
+		descTitle.setStyleName("simple-label-desc");
+		descText.setStyleName("simple-label-desc");
 
 		// setup hidden options
 		FlowPanel description = new FlowPanel();
@@ -213,6 +226,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 
 		jobOptions.add(description);
 		jobOptions.add(new LargeSeprator());
+		jobOptions.add(notifications);
 		jobOptions.add(wrapOptions);
 		jobOptions.add(new LargeSeprator());
 		jobOptions.add(folder);

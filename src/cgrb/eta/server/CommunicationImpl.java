@@ -112,7 +112,15 @@ import cgrb.eta.shared.pipeline.UserPipeline;
 import cgrb.eta.shared.wrapper.Input;
 import cgrb.eta.shared.wrapper.Output;
 import cgrb.eta.shared.wrapper.Wrapper;
-
+/**
+ * The server implementation of methods that our application might want to run.
+ * 
+ * Every method in the CommunicationServer interface needs to be implemented here also, every method in here should be prototyped in the CommunicationService interface.
+ * Alternatively, there is an AsynchCommuncationService which is similar but is asynchronous. That interface is preferred.
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class CommunicationImpl extends RpcServlet implements CommunicationService, SQLService, WrapperService, EventOccuredListener {
 
 	private static final long serialVersionUID = 1L;

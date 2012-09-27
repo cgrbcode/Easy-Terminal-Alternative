@@ -40,12 +40,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Our base tab class. All other types of tabs extend this and use it's general methods. Big thing I'm noticing is canClose, 
- * Which I assume is set to false for the Home tab. AnimatedPanel is what we use in wrapper runnerright now, anytime we'd want to add a moving tab we
- * would instantiate that variable.
+ * Our base tab class. All other types of tabs extend this and use it's general methods. Big thing I'm noticing is canClose, Which I assume is set to false for the Home tab. AnimatedPanel is what we use in wrapperrunner right now, anytime we'd want to add a moving tab we would instantiate that
+ * variable.
  * 
  * @author Alexander Boyd
- *
+ * 
  */
 public class Tab implements TabEventListener {
 	private String title;
@@ -68,9 +67,10 @@ public class Tab implements TabEventListener {
 		return icon;
 	}
 
-	public void setTooltip(String tip){
-		this.tooltip=tip;
+	public void setTooltip(String tip) {
+		this.tooltip = tip;
 	}
+
 	public void setIcon(DataResource icon) {
 		this.icon = icon.getSafeUri().asString();
 	}
@@ -115,32 +115,32 @@ public class Tab implements TabEventListener {
 	}
 
 	public TabHead getHead() {
-		if(head==null){
+		if (head == null) {
 			head = new TabHead(getTitle(), this, getIcon(), canClose);
-			if(tooltip!=null)
+			if (tooltip != null)
 				head.setTooltip(tooltip);
 		}
 		return head;
 	}
 
 	public void tabSelected(TabEvent event) {
-		if(listener!=null)
+		if (listener != null)
 			listener.tabSelected(new TabEvent(this));
 	}
 
 	public void tabClosed(TabEvent event) {
-		if(listener!=null)
-			listener.tabClosed(new TabEvent(this));		
+		if (listener != null)
+			listener.tabClosed(new TabEvent(this));
 	}
 
 	public void setListener(TabEventListener listener) {
 		this.listener = listener;
 	}
-	
-	public Widget getAnimatedPanel(){
+
+	public Widget getAnimatedPanel() {
 		return this.animatedPanel;
 	}
-	
+
 	public void setAnimatedPanel(Widget animatedPanel) {
 		this.animatedPanel = animatedPanel;
 	}

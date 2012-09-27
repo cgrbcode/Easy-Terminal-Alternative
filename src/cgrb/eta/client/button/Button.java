@@ -206,7 +206,7 @@ public class Button extends HorizontalPanel implements MouseDownHandler, MouseUp
 	 * A convenience method to set the height of this button. The width is automatic
 	 * 
 	 * @param size
-	 *          The size of pixels to set the height of this button
+	 *          The size of pixels to set the height of this buttonalls
 	 */
 	public void setSize(int size) {
 		setHeight(size + "px");

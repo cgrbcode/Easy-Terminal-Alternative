@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -57,6 +58,7 @@ import cgrb.eta.client.WrapperServiceAsync;
 import cgrb.eta.client.button.Button;
 import cgrb.eta.client.button.CheckButton;
 import cgrb.eta.client.button.LabelButton;
+import cgrb.eta.client.button.LargeSeprator;
 import cgrb.eta.client.button.MenuButton;
 import cgrb.eta.client.button.SeperatorButton;
 import cgrb.eta.client.button.Seprator;
@@ -77,7 +79,14 @@ import cgrb.eta.shared.etatype.User;
 import cgrb.eta.shared.etatype.UserWrapper;
 import cgrb.eta.shared.wrapper.Input;
 import cgrb.eta.shared.wrapper.Wrapper;
-
+/**
+ * The tab which will run a wrapper multiple times.
+ * 
+ * Displays the exact information that WrapperRunner displays, except it asks for a drop-in to load, and it also adds the for each field at the top of the form.
+ * 
+ * @author Alexander Boyd
+ *
+ */
 public class ForLoopTab extends ETATab {
 
 	private HorizontalPanel bar;
@@ -86,17 +95,20 @@ public class ForLoopTab extends ETATab {
 	private Inputs inputs;
 	private Wrapper wrapper;
 	private MultipleUserSelect usersNot;
-	private LabelButton workingFolder;
+	private SimpleLabel workingFolder;
 	private LabelButton jobName;
 	private CheckButton saveStd;
 	private final WrapperServiceAsync wrapperService = (WrapperServiceAsync) GWT.create(WrapperService.class);
 	private CheckButton notifyMe;
+	private FlowPanel jobOptions;
 
 	public ForLoopTab() {
 		super("For Loop");
 		pane = new VerticalPanel();
 		bar = new HorizontalPanel();
 		pane.setStyleName("drop-here");
+		jobOptions = new FlowPanel();
+		this.setAnimatedPanel(jobOptions);
 
 		pane.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		pane.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -158,21 +170,62 @@ public class ForLoopTab extends ETATab {
 
 	public void setup(Wrapper wrapper) {
 		this.wrapper = wrapper;
-		pane.removeStyleName("drop-here");
 		bar.clear();
 		pane.clear();
 		options = new JobOptions();
 		// make the bar
-		MenuButton programButton = new MenuButton("Program");
-		programButton.addButton(new LabelButton(wrapper.getProgram()));
 		usersNot = new MultipleUserSelect();
-		MenuButton descButton = new MenuButton("Description");
-		descButton.addButton(new LabelButton(wrapper.getDescription()));
+		Label descTitle = new Label("Description:");
+		Label descText = new Label(wrapper.getDescription());
+		descTitle.setStyleName("simple-label-desc");
+		descText.setStyleName("simple-label-desc");
+	
 
-		MenuButton workingDir = new MenuButton("Working Dir");
-		workingFolder = new LabelButton(FileBrowser.lastFolder);
-		workingDir.addButton(workingFolder);
-		workingDir.addButton(new Button("Change").setClickHandler(new ClickHandler() {
+		// setup hidden options
+		FlowPanel description = new FlowPanel();
+		description.setStyleName("animated-options-floats");
+		FlowPanel folder = new FlowPanel();
+		folder.setStyleName("animated-options-floats");
+		FlowPanel wrapOptions = new FlowPanel();
+		wrapOptions.setStyleName("animated-options-floats");
+		FlowPanel notifications = new FlowPanel();
+		notifications.setStyleName("animated-options-floats");
+
+		// description pane
+		description.add(new SimpleLabel("Program: " + wrapper.getProgram()));
+		Button change = new Button("Change Title").setClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				SC.ask("What do you want to name this job?", new ValueListener<String>() {
+					public void returned(String ret) {
+						jobName.setText(ret);
+					}
+				});
+			}
+		});
+		change.setStyleDependentName("-animate-button", true);
+
+		description.add(change);
+		description.add(descTitle);
+		description.add(descText);
+
+		// wrapperOptions pane
+		Button sge = new Button("SGE Options").setClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				options.show();
+			}
+		});
+		sge.setStyleDependentName("-animate-button", true);
+		wrapOptions.add(sge);
+		saveStd = new CheckButton("Save STD");
+		saveStd.setStyleDependentName("-animate-check", true);
+		wrapOptions.add(saveStd);
+
+		// Folder pane
+		SimpleLabel workingDir = new SimpleLabel("Working Dir");
+		folder.add(workingDir);
+		workingFolder = new SimpleLabel((FileBrowser.lastFolder) != "" ? FileBrowser.lastFolder : "No working folder.");
+		folder.add(workingFolder);
+		Button changebutt = new Button("Change").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				new FileSelector(new ItemSelector() {
 					public void itemSelected(String[] items) {
@@ -182,51 +235,35 @@ public class ForLoopTab extends ETATab {
 					}
 				}, FileBrowser.FOLDER_SELECT);
 			}
-		}));
+		});
+		changebutt.setStyleDependentName("-animate-button", true);
+		folder.add(changebutt);
 
-		MenuButton notifyMenu = new MenuButton("Notifications");
+		jobOptions.add(description);
+		jobOptions.add(new LargeSeprator());
+		jobOptions.add(notifications);
+		jobOptions.add(wrapOptions);
+		jobOptions.add(new LargeSeprator());
+		jobOptions.add(folder);
+		jobOptions.add(new LargeSeprator());
+		jobOptions.add(notifications);
+		jobOptions.add(new LargeSeprator());
+
+		// notifypane
+		SimpleLabel notifyMenu = new SimpleLabel("Notifications");
 		notifyMe = new CheckButton("Notify me");
-		notifyMenu.addButton(notifyMe);
+		notifyMe.setStyleDependentName("-animate-button", true);
+		notifications.add(notifyMenu);
+		notifications.add(notifyMe);
 
-		notifyMenu.addButton(new Button("Notify Others").setClickHandler(new ClickHandler() {
+		Button noteothers = new Button("Notify Others").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				SC.ask("Select the users you want to notify", usersNot, null);
 			}
-		}));
+		});
+		noteothers.setStyleDependentName("-animate-button", true);
+		notifications.add(noteothers);
 
-		MenuButton jobOptions = new MenuButton("Job Options");
-		jobOptions.addButton(new Button("SGE Options").setClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				options.show();
-			}
-		}));
-		jobOptions.addButton(new SeperatorButton());
-		jobOptions.addButton(new LabelButton("Job name"));
-		jobName = new LabelButton(wrapper.getName());
-		jobOptions.addButton(jobName);
-		jobOptions.addButton(new Button("Change").setClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				SC.ask("What do you want to name this job?", new ValueListener<String>() {
-					public void returned(String ret) {
-						jobName.setText(ret);
-					}
-				});
-			}
-		}));
-		jobOptions.addButton(new SeperatorButton());
-		saveStd = new CheckButton("Save STD");
-		jobOptions.addButton(saveStd);
-
-		bar.add(programButton);
-		bar.add(new Seprator());
-		bar.add(descButton);
-		bar.add(new Seprator());
-		bar.add(workingDir);
-		bar.add(new Seprator());
-		bar.add(notifyMenu);
-		bar.add(new Seprator());
-		bar.add(jobOptions);
-		bar.add(new Seprator());
 		bar.add(new SimpleLabel("Wrapper created by: " + wrapper.getCreator()).setColor("white").setFontSize(10));
 
 		// the panels
@@ -310,7 +347,7 @@ public class ForLoopTab extends ETATab {
 				wrapper.setInputs(inputs2);
 				job.setWrapper(wrapper);
 				job.setName(jobName.getText() + " " + count++);
-				job.setWorkingDir(workingFolder.getText());
+				job.setWorkingDir(workingFolder.getTitle());
 				job.setUserId(ETA.getInstance().getUser().getId());
 				job.setWaitingFor(0);
 				job.setSpecs(options.getSpecs());

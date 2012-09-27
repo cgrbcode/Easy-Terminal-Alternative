@@ -39,6 +39,7 @@ import java.util.Vector;
 
 import cgrb.eta.client.button.Button;
 import cgrb.eta.client.button.Filler;
+import cgrb.eta.client.button.OptionButton;
 import cgrb.eta.client.button.Seprator;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -64,10 +65,18 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TabPane extends Composite implements TabEventListener, ValueChangeHandler<String> {
-	/**
+/**
+ * TabPane is the pane that holds all of the tabs and controls the panel that the content goes into.
+ * 
+ * The variables themselves dictate exactly where they go. Anything you want loaded before a tab loads should go in here. Examples would be the animations panel, and the options button. Both of those things are loaded BEFORE the tab is loaded. Tabs are also loaded in this file, identified in the
+ * file, and drawn in this file. Animation is also handled here.
+ * 
+ * 
+ * @author Alexander Boyd
  * 
  */
+public class TabPane extends Composite implements TabEventListener, ValueChangeHandler<String> {
+
 	private HorizontalPanel tabBar;
 	private HorizontalPanel topBar;
 	private HorizontalPanel bottomBar;
@@ -79,7 +88,7 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 	private HandlerRegistration handler;
 	private TabManager manager = null;
 	private HashMap<String, Tab> tabMap;
-	private final Button showOptions;
+	private final OptionButton showOptions;
 	private FlowPanel animationHolder;
 
 	public TabPane() {
@@ -147,26 +156,17 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 		});
 		animationHolder = new FlowPanel();
 		animationHolder.setStylePrimaryName("animated-options-panel");
-		showOptions = new Button("Show Options");
-		showOptions.setStyleDependentName("-options-button", true);
+		showOptions = new OptionButton("Show Options");
+		showOptions.removeStyleName("eta-button");
+		showOptions.setStyleName("eta-button-options-button", true);
 		showOptions.setClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent eshowOptionsvent) {
+			@Override
+			public void onClick(ClickEvent showOptionsevent) {
 				animateOptionsView(showOptions);
-				showOptions.setStyleDependentName("-options-button", true);
-				
+				// showOptions.setStyleDependentName("-options", true);
 			}
 		});
-		
-		showOptions.onMouseOut(new MouseOutEvent(){
-			public void onMouseOut(){
-				//showOptions.setStyleDependentName("-options-button", true);
-				//do y
-			}
-		});
-		
-		
-		
-		
+
 	}
 
 	@Override
@@ -263,7 +263,6 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 		new ShowAnimation().cancel();
 		animationHolder.getElement().getStyle().setHeight(0, Unit.PCT);
 		showOptions.setText("Show Options");
-		
 
 		content.add(tab.getPane());
 		content.add(animationHolder);
@@ -380,13 +379,23 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 		return tabMap.get(ident);
 	}
 
+	/**
+	 * 
+	 * Method handles the up and down motion of the animation panel.
+	 * 
+	 * @param options
+	 * The button that contains the "Show/Hide Options"
+	 * Needs to be passed so the Title can be changed.
+	 * 
+	 * @see Animations.java
+	 */
 	private void animateOptionsView(Button options) {
 		if (options.getTitle().equals("Show Options")) {
 			new ShowAnimation().run(1000);
 			options.setText("Hide Options");
 		} else {
 			new HideAnimation().run(1000);
-			options.setText("Show Options");//animationHolder.getElement().getStyle().setHeight(40, Unit.PCT);
+			options.setText("Show Options");// animationHolder.getElement().getStyle().setHeight(40, Unit.PCT);
 
 		}
 
@@ -406,7 +415,7 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 		@Override
 		public void cancel() {
 			super.cancel();
-		
+
 		}
 	}
 
@@ -422,7 +431,6 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 		@Override
 		public void cancel() {
 			super.cancel();
-	
 
 		}
 	}

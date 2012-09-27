@@ -46,6 +46,14 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * A custom label that has a few useful features.
+ * 
+ * Contains a way to have a tooltip appear on hover, has a way to set the title such that it returns the current widget, useful for quick inline declarations of things.
+ * 
+ * @author Alexander Boyd
+ * 
+ */
 public class SimpleLabel extends VerticalPanel implements MouseOverHandler, MouseOutHandler {
 	protected PopupPanel toolTip;
 
