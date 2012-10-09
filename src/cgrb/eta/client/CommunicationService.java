@@ -90,7 +90,8 @@ public interface CommunicationService extends RpcService {
 	Vector<File> getFiles(String browser, String path);
 	Vector<File> back(String browser, String path);
 	Vector<File> getHistory(String browser);
-	boolean removeFiles(Vector<File> files);
+	//changed to string so that it could give us the error message
+	String removeFiles(Vector<File> files);
 	boolean logIn(String user, String password);
 	String getFileContents(File file, long startByte, long bytes);
 	void createFolder(String path);

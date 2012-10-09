@@ -49,6 +49,7 @@ import cgrb.eta.shared.wrapper.Wrapper;
  * runs as each user and gives sandboxed access to the infustructre.
  * Any call from ETA by the user goes though this service
  * @author Alexander Boyd
+ * @see ETAStart.java
  *
  */
 public interface RemoteUserService extends RemoteService{
@@ -115,8 +116,8 @@ public interface RemoteUserService extends RemoteService{
 	public void makeFolder(String string);
 	public void statusChanged(int jobId);
 
-
-	public void removeFiles(Vector<cgrb.eta.shared.etatype.File> files);
+	//this is my dead end. Where is this implemented at. ANSWER: ETA START
+	public String removeFiles(Vector<cgrb.eta.shared.etatype.File> files);
 
 
 	public boolean moveFile(String from, String to);

@@ -177,7 +177,12 @@ public class EventListener {
 			}
 		}
 	};
-
+	/**
+	 * checkEvents is the code that looks for new events that are occurring. It checks every 1000 milliseconds and notifies the handler that it heard something.
+	 * 
+	 * @see cgrb.eta.server.CommunicationImpl.java
+	 * @see cgrb.eta.shared.ETAEvent.java
+	 */
 	private void checkEvents() {
 		if (running) {
 			return;

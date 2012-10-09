@@ -415,7 +415,7 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 			navigateTo(lastFolder);
 		EventListener.getInstance().addListener(ETAEvent.MACHINE, new EventOccuredListener() {
 			public void eventOccured(ETAEvent event, int user) {
-//				MachineEvent ev = (MachineEvent) event.getSource();
+				// MachineEvent ev = (MachineEvent) event.getSource();
 
 				navigateTo(lastFolder);
 			}
@@ -519,8 +519,8 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 	}
 
 	public static native String getFileName(JavaScriptObject file)/*-{
-																																return file.name;
-																																}-*/;
+		return file.name;
+	}-*/;
 
 	public void saveFileBuffer(final String fileName, JavaScriptObject obj) {
 		byte[] contents = new ArrayConversion(obj).bytes;
@@ -553,74 +553,74 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 
 	public static native void setupFileDrop(Element element, Element show, Table<File> table, FileBrowser browser)/*-{
 
-																																																								function handleDragOver(evt) {
-																																																								evt.stopPropagation();
-																																																								evt.preventDefault();
-																																																								if (evt.dataTransfer.types[0] != "text/plain") {
-																																																								evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-																																																								show.style.display = "block";
-																																																								table.@cgrb.eta.client.table.Table::adjustSize()();
-																																																								}
-																																																								}
-																																																								function isIn(x, y) {
-																																																								return browser.@cgrb.eta.client.window.FileBrowser::isIn(II)(x,y);
-																																																								}
-																																																								function handleDragLeave(e) {
-																																																								if (isIn(e.clientX, e.clientY))
-																																																								return;
-																																																								show.style.display = "none";
-																																																								table.@cgrb.eta.client.table.Table::adjustSize()();
-																																																								}
+		function handleDragOver(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			if (evt.dataTransfer.types[0] != "text/plain") {
+				evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+				show.style.display = "block";
+				table.@cgrb.eta.client.table.Table::adjustSize()();
+			}
+		}
+		function isIn(x, y) {
+			return browser.@cgrb.eta.client.window.FileBrowser::isIn(II)(x,y);
+		}
+		function handleDragLeave(e) {
+			if (isIn(e.clientX, e.clientY))
+				return;
+			show.style.display = "none";
+			table.@cgrb.eta.client.table.Table::adjustSize()();
+		}
 
-																																																								function handleDragEnd(e) {
-																																																								show.style.display = "none";
-																																																								table.@cgrb.eta.client.table.Table::adjustSize()();
-																																																								}
+		function handleDragEnd(e) {
+			show.style.display = "none";
+			table.@cgrb.eta.client.table.Table::adjustSize()();
+		}
 
-																																																								function handleDragLeaveShow(e) {
-																																																								browser.@cgrb.eta.client.window.FileBrowser::showOut()();
-																																																								}
-																																																								function handleDragOverShow(e) {
-																																																								e.stopPropagation();
-																																																								e.preventDefault();
-																																																								browser.@cgrb.eta.client.window.FileBrowser::showOver()();
-																																																								}
-																																																								function handleDropShow(evt) {
-																																																								evt.stopPropagation();
-																																																								evt.preventDefault();
-																																																								show.style.display = "none";
+		function handleDragLeaveShow(e) {
+			browser.@cgrb.eta.client.window.FileBrowser::showOut()();
+		}
+		function handleDragOverShow(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			browser.@cgrb.eta.client.window.FileBrowser::showOver()();
+		}
+		function handleDropShow(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			show.style.display = "none";
 
-																																																								var files = evt.dataTransfer.files;
-																																																								for ( var i = 0, f; f = files[i]; i++) {
-																																																								browser.@cgrb.eta.client.window.FileBrowser::addFileUpload(Lcom/google/gwt/core/client/JavaScriptObject;)(f);
-																																																								}
-																																																								browser.@cgrb.eta.client.window.FileBrowser::showOut()();
-																																																								}
-																																																								element.addEventListener('dragleave', handleDragLeave, false);
-																																																								element.addEventListener('dragend', handleDragEnd, false);
-																																																								element.addEventListener('dragover', handleDragOver, false);
-																																																								show.addEventListener('dragleave', handleDragLeaveShow, false);
-																																																								show.addEventListener('dragover', handleDragOverShow, false);
-																																																								show.addEventListener('drop', handleDropShow, false);
+			var files = evt.dataTransfer.files;
+			for ( var i = 0, f; f = files[i]; i++) {
+				browser.@cgrb.eta.client.window.FileBrowser::addFileUpload(Lcom/google/gwt/core/client/JavaScriptObject;)(f);
+			}
+			browser.@cgrb.eta.client.window.FileBrowser::showOut()();
+		}
+		element.addEventListener('dragleave', handleDragLeave, false);
+		element.addEventListener('dragend', handleDragEnd, false);
+		element.addEventListener('dragover', handleDragOver, false);
+		show.addEventListener('dragleave', handleDragLeaveShow, false);
+		show.addEventListener('dragover', handleDragOverShow, false);
+		show.addEventListener('drop', handleDropShow, false);
 
-																																																								}-*/;
+	}-*/;
 
 	private static native void readFileBuffer(JavaScriptObject file, int start, int stop, FileBrowser browser)/*-{
-																																																						var reader = new FileReader();
-																																																						reader.onloadend = function(evt) {
-																																																						if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-																																																						var bytes = new Uint8Array(evt.target.result);
-																																																						browser.@cgrb.eta.client.window.FileBrowser::saveFileBuffer(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(file.name,bytes);
-																																																						}
-																																																						};
-																																																						if (file.webkitSlice) {
-																																																						var blob = file.webkitSlice(start, stop);
-																																																						} else if (file.mozSlice) {
-																																																						var blob = file.mozSlice(start, stop);
-																																																						}
-																																																						reader.readAsArrayBuffer(blob)
-																																																						//reader.readAsBinaryString(blob);
-																																																						}-*/;
+		var reader = new FileReader();
+		reader.onloadend = function(evt) {
+			if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+				var bytes = new Uint8Array(evt.target.result);
+				browser.@cgrb.eta.client.window.FileBrowser::saveFileBuffer(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(file.name,bytes);
+			}
+		};
+		if (file.webkitSlice) {
+			var blob = file.webkitSlice(start, stop);
+		} else if (file.mozSlice) {
+			var blob = file.mozSlice(start, stop);
+		}
+		reader.readAsArrayBuffer(blob)
+		//reader.readAsBinaryString(blob);
+	}-*/;
 
 	private void extractFile(File file) {
 		String mime = file.getMime();
@@ -639,7 +639,7 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 					communicationService.startSession(plugin.getId(), browser.getSelection().get(0).getPath(), new MyAsyncCallback<String>() {
 						@Override
 						public void success(String result) {
-							final Frame pluginFrame = new Frame("/plugins/" + plugin.getIdentifier() + "/" + plugin.getIndex() + "?session=" + result );
+							final Frame pluginFrame = new Frame("/plugins/" + plugin.getIdentifier() + "/" + plugin.getIndex() + "?session=" + result);
 							pluginFrame.setWidth("100%");
 							pluginFrame.setHeight("600px");
 							HorizontalPanel menu = new HorizontalPanel();
@@ -739,12 +739,21 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 			}
 		});
 	}
-
+  // checks to see if an error message was passed back. If it was display a window telling the user that.
+	// The check is surrounded in a try catch just incase there is an empty string returned
 	private void removeFiles(Vector<File> files) {
-		communicationService.removeFiles(files, new MyAsyncCallback<Boolean>() {
+		communicationService.removeFiles(files, new MyAsyncCallback<String>() {
 			@Override
-			public void success(Boolean result) {
+			public void success(String result) {
 				navigateTo(lastFolder);
+				try {
+					if (result.substring(0, 2).equals("E#")) {
+						SC.alert("Error", result.substring(2));
+					}
+				} catch (StringIndexOutOfBoundsException e) {
+
+				}
+
 			}
 		});
 	}
@@ -990,7 +999,7 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 					public void returned(Boolean ret) {
 						if (!ret)
 							return;
-						communicationService.moveFile(source.getPath(), record.getPath() + "/"+source.getName(), new MyAsyncCallback<Boolean>() {
+						communicationService.moveFile(source.getPath(), record.getPath() + "/" + source.getName(), new MyAsyncCallback<Boolean>() {
 							@Override
 							public void success(Boolean result) {
 								navigateTo(lastFolder);
@@ -1005,7 +1014,7 @@ public class FileBrowser extends Composite implements DragListener, RowClickHand
 						public void returned(Boolean ret) {
 							if (!ret)
 								return;
-							communicationService.moveFile(source.getPath(), record.getPath() + "/"+source.getName(), new MyAsyncCallback<Boolean>() {
+							communicationService.moveFile(source.getPath(), record.getPath() + "/" + source.getName(), new MyAsyncCallback<Boolean>() {
 								@Override
 								public void success(Boolean result) {
 									navigateTo(lastFolder);

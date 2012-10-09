@@ -127,7 +127,11 @@ public class HTTPSPost {
 
 			// write out the data
 			System.out.println(post);
-			output.write(post);
+			try {
+				output.write(post);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
 			output.flush();
 			// output.close();
 

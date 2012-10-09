@@ -60,6 +60,7 @@ import java.util.Vector;
 
 import org.apache.commons.codec.binary.Hex;
 
+import cgrb.eta.client.window.SC;
 import cgrb.eta.server.FileWatcherService;
 import cgrb.eta.server.FolderChangedListener;
 import cgrb.eta.server.LocalETAConnectionServer;
@@ -548,28 +549,38 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 		}
 		return list;
 	}
-
+	//just returns an error if the error stream contains something.
 	public String runSystemCommand(String[] args, String workingDir) {
 		String ret = "";
+		String error = "";
 		try {
 			// if (!ProgramManager.getInstance().isInstalled((String) args[0]))
 			// return "";
 			Process p;
 			if (workingDir == null || workingDir.equals(""))
 				p = Runtime.getRuntime().exec(args);
-			else
+			else {
 				p = Runtime.getRuntime().exec(args, null, new File(workingDir));
-
+				System.out.println(p.toString());
+			}
 			BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = "";
 			while ((line = r.readLine()) != null) {
 				ret += line + "\n";
 			}
+			BufferedReader e = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			String err = "";
+			while ((err = e.readLine()) != null) {
+				error += err + "\n";
+			}
+			if (!error.equals(""))
+				ret = "E#" + error;
+			e.close();
 			r.close();
+			System.err.println(error);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return ret;
 	}
 
@@ -885,12 +896,23 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 	@Override
 	public void statusChanged(int jobId) {
 	}
-
+	//if an error exists (checks through parsing) it returns the error. otherwise it returns the same things as before (I wasn't sure if 
+	//	it was being used or not so i just kept it in). Also surrounded in try catch to keep the console from freaking out.
 	@Override
-	public void removeFiles(Vector<cgrb.eta.shared.etatype.File> files) {
-		for(cgrb.eta.shared.etatype.File file:files){
-			runSystemCommand(new String[] { "rm", "-rf", file.getPath() }, "");
+	public String removeFiles(Vector<cgrb.eta.shared.etatype.File> files) {
+		String error = "";
+		String temp;
+		for (cgrb.eta.shared.etatype.File file : files) {
+			temp = runSystemCommand(new String[] { "rm", "-rf", file.getPath() }, "");
+			try {
+				if (temp.substring(0, 2).equals("E#")) {
+					error += temp;
+				}
+			} catch (StringIndexOutOfBoundsException e) {
+
+			}
 		}
+		return error;
 	}
 
 	@Override
@@ -944,18 +966,18 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 	@Override
 	public boolean deCompressFile(String mime, String archive, String where) {
 		String[] command = null;
-    if (mime.equals("application/x-tar")) {
-            command = new String[] { "tar", "-xf", archive };
-    } else if (mime.equals("application/x-compressed-tar")) {
-            command = new String[] { "tar", "-zxf", archive };
-    } else if (mime.equals("application/zip")) {
-            command = new String[] { "unzip", archive };
-    } else if (mime.equals("application/x-gzip")) {
-            command = new String[] { "gzip", "-d", archive };
-    }else{
-    	return false;
-    }
-    runSystemCommand(command, where);
+		if (mime.equals("application/x-tar")) {
+			command = new String[] { "tar", "-xf", archive };
+		} else if (mime.equals("application/x-compressed-tar")) {
+			command = new String[] { "tar", "-zxf", archive };
+		} else if (mime.equals("application/zip")) {
+			command = new String[] { "unzip", archive };
+		} else if (mime.equals("application/x-gzip")) {
+			command = new String[] { "gzip", "-d", archive };
+		} else {
+			return false;
+		}
+		runSystemCommand(command, where);
 		return true;
 	}
 

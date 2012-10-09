@@ -408,7 +408,7 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 
 		@Override
 		protected void onUpdate(double progress) {
-			animationHolder.getElement().getStyle().setHeight((progress) * 40, Unit.PCT);
+			animationHolder.getElement().getStyle().setHeight((progress) * 25, Unit.PCT);
 
 		}
 
@@ -425,7 +425,7 @@ public class TabPane extends Composite implements TabEventListener, ValueChangeH
 
 		@Override
 		protected void onUpdate(double progress) {
-			animationHolder.getElement().getStyle().setHeight((1 - progress) * 40, Unit.PCT);
+			animationHolder.getElement().getStyle().setHeight((1 - progress) * 25, Unit.PCT);
 		}
 
 		@Override

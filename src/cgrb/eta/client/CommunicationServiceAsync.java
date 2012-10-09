@@ -128,8 +128,8 @@ public interface CommunicationServiceAsync {
 	void getPendingClusters(AsyncCallback<Vector<PendingCluster>> callback);
 
 	void getUserPendingClusters(AsyncCallback<Vector<PendingCluster>> callback);
-
-	void removeFiles(Vector<File> files, AsyncCallback<Boolean> callback);
+	//the callback now contains a string to be consistant with the other methods. It appears the boolean wasn't doing anything.
+	void removeFiles(Vector<File> files, AsyncCallback<String> callback);
 
 	void saveFileBuffer(String file, byte[] contents, AsyncCallback<String> callback);
 

@@ -2550,14 +2550,13 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 			rerunJob(Integer.parseInt(res[0]));
 		}
 	}
-
+	//now returns a string that holds the error message (or blank)
 	@Override
-	public boolean removeFiles(Vector<cgrb.eta.shared.etatype.File> files) {
+	public String removeFiles(Vector<cgrb.eta.shared.etatype.File> files) {
 		User user = getUser();
 		if (user == null)
-			return false;
-		userManager.getUserService(user.getId()).removeFiles(files);
-		return true;
+			return "";
+		return userManager.getUserService(user.getId()).removeFiles(files);
 	}
 
 	@Override

@@ -100,5 +100,4 @@ public class RemoteETAConnectionServiceImpl implements RemoteETAConnectionServic
 			impl.getRemoteService().remoteRemoveFile(name);
 		}
 	}
-
 }

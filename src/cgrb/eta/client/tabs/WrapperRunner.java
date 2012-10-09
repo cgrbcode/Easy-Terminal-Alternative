@@ -250,6 +250,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		notifications.add(noteothers);
 
 		bar.add(new SimpleLabel("Wrapper created by: " + wrapper.getCreator()).setColor("white").setFontSize(10));
+		bar.add(new Seprator());
 
 		// the panels
 		HorizontalPanel top = new HorizontalPanel();

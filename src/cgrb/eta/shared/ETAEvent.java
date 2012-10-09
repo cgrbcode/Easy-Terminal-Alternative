@@ -37,9 +37,9 @@ package cgrb.eta.shared;
 import java.io.Serializable;
 
 public class ETAEvent implements Serializable {
-	public static final int COMMAND = 2;
 	public static final int JOB = 0;
 	public static final int MACHINE = 1;
+	public static final int COMMAND = 2;
 	public static final int USER = 3;
 	public static final int LOGOUT = 4;
 	public static final int UPLOAD = 5;

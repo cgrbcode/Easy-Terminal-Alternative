@@ -564,9 +564,10 @@ public class IPlantUserService implements RemoteUserService {
 	}
 
 	@Override
-	public void removeFiles(Vector<File> files) {
+	public String removeFiles(Vector<File> files) {
 		for (File file : files)
 			delete("io-v1/io" + file.getPath());
+		return "";
 	}
 
 	@Override
