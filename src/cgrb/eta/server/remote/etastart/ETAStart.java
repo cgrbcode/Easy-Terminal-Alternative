@@ -580,6 +580,7 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 			System.err.println(error);
 		} catch (IOException e) {
 			e.printStackTrace();
+			ret = "E#" + e.getLocalizedMessage();
 		}
 		return ret;
 	}

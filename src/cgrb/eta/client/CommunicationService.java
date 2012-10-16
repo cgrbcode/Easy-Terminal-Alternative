@@ -108,6 +108,7 @@ public interface CommunicationService extends RpcService {
 	String cancelJob(int job);
 	public String[] getQueues();
 	public String[] getThreadEnviroments();
+	public void requestPwChange(String body, String accountName);
 	
 	//methods that need to be changed to be more modular
 	void runQmod(Vector<String> jobs, String wrapper);

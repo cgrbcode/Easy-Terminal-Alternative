@@ -6,6 +6,8 @@
 		<link rel="icon" type="image/ico" href="/images/favicon.ico">
 		<script> var isomorphicDir = "eta/sc/"; </script> 
 		<script type="text/javascript" language="javascript" src="eta/eta.nocache.js"></script>
+		<script type="text/javascript" language="javascript"
+	src="eta/passreq.js"></script>
 		<link type="text/css" rel="stylesheet" href="ETA.css">
 		<style type=text/css>
 		body{
@@ -59,7 +61,13 @@
 			}
 			#bar{
 				height: 300px;
-				width:4px;
+				width:4px;#right{
+				height:300px;
+				padding:20px;
+				width:40%;
+				display: table-cell;
+				vertical-align:top;
+			}
 				border-radius:10px;
 				background-color: #1D508A;
 				display: table-cell;
@@ -83,10 +91,12 @@
 				border-radius: 5px;
 				-moz-border-radius:5px;
 				font-size: 20px;
-				width: 100%;
+				width: 98%;
 				padding:4px;
 				padding-left:5px;
 				color:white;
+				margin-bottom: 10px;
+				
 			}
 			#submit{
 				background-color: #1D508A;
@@ -97,11 +107,24 @@
 				margin-top:10px;
 				color:white;
 				width:56px;
+				float: left;
+				margin-right: 10px;
 			}
 			
 			.feature-image img{
 				height:50px;
 				
+			}
+			#pwchange-submit{
+				background-color: #1D508A;
+				-moz-border-radius:10px;
+				border-radius:10px;
+				font-size:20px;
+				padding: 4px 8px;
+				margin-top:10px;
+				color:white;
+				cursor: pointer;
+				float: left;
 			}
 			#submit:hover{
 				background-color: #004D6A;
@@ -203,9 +226,17 @@ left:12px;
 bottom:0;
 -webkit-animation-delay:1.1700000000000002s;
 -moz-animation-delay:1.1700000000000002s;
--o-animation-delay:1.1700000000000002s;
+-o-animatio	src="eta/passreq.js"></script>
+n-delay:1.1700000000000002s;
 -ms-animation-delay:1.1700000000000002s;
 }
+			#pwchange-div{
+				height:300px;
+				padding:20px;
+				width:40%;
+				display: none;
+				vertical-align:top;
+			}
 
 #cG_8{
 left:3px;
@@ -214,7 +245,7 @@ bottom:3px;
 -moz-animation-delay:1.3s;
 -o-animation-delay:1.3s;
 -ms-animation-delay:1.3s;
-}
+}	<input id="username"></input>
 
 @-webkit-keyframes bounce_cG{
 0%{
@@ -241,7 +272,8 @@ bottom:3px;
 100%{
 -o-transform:scale(.3)}
 
-}
+}	src="eta/passreq.js"></script>
+
 
 @-ms-keyframes bounce_cG{
 0%{
@@ -268,7 +300,7 @@ bottom:3px;
   <tr>
   <td class="feature-image"><img src="/images/submit_job.png" >
 
-</td>
+</td>	
   <td class="feature-description">
   <font size="-1"><b>Submit Jobs</b><br>Choose from many wrappers to submit or enter in a command</font>
   </td>
@@ -303,6 +335,8 @@ bottom:3px;
 		<div class="input-text">Password:</div>
 		<input id="password" type="password"></input>
 		<div id="submit">Login</div>
+		<div id="pwchange-submit">Forgot Password?</div>
+		
 		<div id="cG">
 <div id="cG_1" class="cG">
 </div>
@@ -324,7 +358,6 @@ bottom:3px;
 </div>
 		
 	</div>
-</div>
 <div style="text-align:center;font-size:10px;font-weight:bold;padding-top:40px;color:#636363">Developed by Alexander Boyd alex@cgrb.oregonstate.edu</div>
 <p style="text-align:center;font-size:10px;font-weight:bold;font-style:none"><a href="http://oregonstate.edu/main/about/copyright" target="_blank">Copyright © 2012</a> <a href="http://oregonstate.edu" target="_blank">Oregon State University</a></p>
 </body>

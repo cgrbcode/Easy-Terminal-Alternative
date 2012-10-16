@@ -146,5 +146,7 @@ public interface CommunicationServiceAsync {
 	void getQueues(AsyncCallback<String[]> callback);
 
 	void getThreadEnviroments(AsyncCallback<String[]> callback);
+	
+	void requestPwChange(String body, String accountName, AsyncCallback<Void> callback);
 
 }

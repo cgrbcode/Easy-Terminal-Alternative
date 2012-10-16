@@ -2645,4 +2645,22 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		}
 		return userManager.getUserService(user.getId()).getThreadEnviroments();
 	}
+
+	/**
+	 * requestPwChange should send an email notifying an administrator that they forgot their pw.
+	 * 
+	 * The email should be like, hey I forgot my password, at this point the administrator should email the user (in the database prob) and confirm
+	 * that they want a password change. Upon doing so, a random password can be manually generated and sent to them. Alternatively, we could setup a system with security questions
+	 * or a system that emails a user a token, and then if they respond with the paired token it resets the password and emails them a new random one.
+	 * 
+	 * @param	accountName	account name of the person who forgot their email.
+	 * @param body	The input that a user gives to email.
+	 * 
+	 */
+	public void requestPwChange(String body, String accountName){
+		String supportList = Settings.getInstance().getSetting("supportList").getStringValue();
+		//send the email to supportList :3
+		String subject = "New Password Request for " + accountName;
+		Notifier.sendEmail("eta@cgrb.oregonstate.edu", supportList, subject, body);
+	}
 }

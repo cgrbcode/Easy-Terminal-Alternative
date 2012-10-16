@@ -34,6 +34,8 @@
  */
 package cgrb.eta.client;
 
+import java.util.Vector;
+
 import cgrb.eta.client.button.Button;
 import cgrb.eta.client.button.Filler;
 import cgrb.eta.client.button.ImgButton;
@@ -42,6 +44,7 @@ import cgrb.eta.client.button.MenuButton;
 import cgrb.eta.client.button.SearchInput;
 import cgrb.eta.client.button.SeperatorButton;
 import cgrb.eta.client.button.Seprator;
+import cgrb.eta.client.button.SimpleLabel;
 import cgrb.eta.client.button.ValueListener;
 import cgrb.eta.client.images.Resources;
 import cgrb.eta.client.pipeline.PipelineCreator;
@@ -88,9 +91,11 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -119,8 +124,8 @@ public class ETA implements EntryPoint {
 	public static ETA getInstance() {
 		return instance;
 	}
-	
-	public static int getTextWidth(String text){
+
+	public static int getTextWidth(String text) {
 		textFunction.setText(text);
 		return textFunction.getOffsetWidth();
 	}
@@ -136,7 +141,7 @@ public class ETA implements EntryPoint {
 			communicationService.getUser(new AsyncCallback<User>() {
 				public void onSuccess(User result) {
 					if (result == null) {
-						// the user isn't loged in take them to the login page
+						// the user isn't logged in take them to the login page
 						com.google.gwt.user.client.Window.open("/ServiceLogin.html?send=" + Location.getHref(), "_self", "");
 					} else {
 						user = result;
@@ -148,13 +153,13 @@ public class ETA implements EntryPoint {
 					com.google.gwt.user.client.Window.open("/ServiceLogin.html?send=" + Location.getHref(), "_self", "");
 				}
 			});
-		} else if (Location.getPath().contains("ServiceLogin.html") || Location.getPath().contains("ExternalLogin.html")|| Location.getPath().contains("external.html")) {
+		} else if (Location.getPath().contains("ServiceLogin.html") || Location.getPath().contains("ExternalLogin.html") || Location.getPath().contains("external.html")) {
 			// now set up the login page
 			String sendTo2 = Location.getParameter("send");
 			if (sendTo2 == null) {
 				sendTo2 = "http://" + Location.getHostName() + ":" + Location.getPort() + "/ETA.html";
 			}
-			final String sendTo = sendTo2+"#"+History.getToken();
+			final String sendTo = sendTo2 + "#" + History.getToken();
 			final String externalToken = Location.getParameter("external");
 			communicationService.getUser(new AsyncCallback<User>() {
 				public void onSuccess(User result) {
@@ -180,6 +185,35 @@ public class ETA implements EntryPoint {
 							submit(sendTo);
 						}
 					});
+					
+					
+					RootPanel.get("pwchange-submit").addDomHandler(new ClickHandler() {
+
+						public void onClick(ClickEvent event) {
+							FlowPanel pwForm = new FlowPanel();
+							SimpleLabel lemail = new SimpleLabel("Enter your email: ");
+							final TextBox email = new TextBox();
+							SimpleLabel laccount = new SimpleLabel("Enter your account name:");
+							final TextBox account = new TextBox();
+
+							pwForm.add(lemail);
+							pwForm.add(email);
+							pwForm.add(laccount);
+							pwForm.add(account);
+							SC.ask("Password Request Form", pwForm, new ValueListener<Boolean>() {
+								public void returned(Boolean ret) {
+									if (ret == true){
+										pwRequest(account.getText(), email.getText());
+									}
+								}
+							});
+									
+							
+							
+						}
+
+					}, ClickEvent.getType());
+
 					// submit.add
 					RootPanel.get("submit").addDomHandler(new ClickHandler() {
 						public void onClick(ClickEvent event) {
@@ -192,8 +226,8 @@ public class ETA implements EntryPoint {
 		}
 
 	}
-	
-	public RootPanel getRootPanel(){
+
+	public RootPanel getRootPanel() {
 		return RootPanel.get();
 	}
 
@@ -255,8 +289,7 @@ public class ETA implements EntryPoint {
 				addTab(new ResultsTab());
 			}
 		}));
-		
- 
+
 		mainTabSet.addTopButton(view);
 		mainTabSet.addTopButton(new Seprator());
 
@@ -323,7 +356,7 @@ public class ETA implements EntryPoint {
 				// new UserSelector(null);
 				addTab(new WrapperCreator());
 			}
-		})); 
+		}));
 		create.addButton(new Button("Pipeline").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				addTab(new PipelineCreator());
@@ -520,7 +553,7 @@ public class ETA implements EntryPoint {
 					return new NewRequestTab();
 				} else if (id.equals("gc")) {
 					return new GeneCounter();
-				}else if (id.equals("pp")) {
+				} else if (id.equals("pp")) {
 					return new PipelinesTab();
 				} else if (id.startsWith("plc#")) {
 					id = id.split("#")[1];
@@ -584,11 +617,19 @@ public class ETA implements EntryPoint {
 				}
 			});
 		}
-		textFunction=new Label();
+		textFunction = new Label();
 		textFunction.setStyleName("hiddenText");
 		RootPanel.get().add(textFunction);
-		
-		
+
+	}
+
+	private void pwRequest(final String account, String email) {
+		final String message = "Password change request from \nUser: " + account + "\nEmail: " + email;
+		communicationService.requestPwChange(message, account, new MyAsyncCallback<Void>() {
+			public void success(Void result) {
+				SC.alert("Success!", "Password change request sent for "+ account);
+			}
+		});
 	}
 
 	private void submit(final String sendTo) {
@@ -600,8 +641,8 @@ public class ETA implements EntryPoint {
 		String password = RootPanel.get("password").getElement().getPropertyString("value");
 		communicationService.logIn(username, password, new MyAsyncCallback<Boolean>() {
 			public void success(Boolean result) {
-				if (result != null&&result==true) {
-						Window.open(sendTo, "_self", "");
+				if (result != null && result == true) {
+					Window.open(sendTo, "_self", "");
 				} else {
 					SC.alert("Login Failed", "Invalid username or password");
 					RootPanel.get("submit").getElement().getStyle().setDisplay(Display.BLOCK);
