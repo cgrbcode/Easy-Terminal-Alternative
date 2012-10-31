@@ -159,6 +159,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		bar.clear();
 		pane.clear();
 		options = new JobOptions();
+		jobName = new LabelButton(wrapper.getName());
 		// make the bar
 		usersNot = new MultipleUserSelect();
 		Label descTitle = new Label("Description:");
