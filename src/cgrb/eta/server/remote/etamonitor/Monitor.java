@@ -231,7 +231,9 @@ public class Monitor implements RemoteMonitorService {
 			sending[0] = LocalETAConnectionServer.ETA_MONITOR;
 			Socket sock = new Socket(server, 3256);
 			sock.getOutputStream().write(sending);
+			sock.getOutputStream().flush();
 			sock.getOutputStream().write((job + "\n").getBytes());
+			sock.getOutputStream().flush();
 			connection = new RMIConnection(sock, this, true);
 			con = (MonitorService) connection.getService(MonitorService.class);
 		} catch (UnknownHostException e) {

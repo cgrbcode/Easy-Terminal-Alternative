@@ -34,7 +34,6 @@
  */
 package cgrb.eta.client;
 
-import java.util.Vector;
 
 import cgrb.eta.client.button.Button;
 import cgrb.eta.client.button.Filler;

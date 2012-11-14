@@ -224,6 +224,7 @@ public class LocalETAConnectionServer extends Thread implements MonitorService, 
 	 *          The first 31 bytes that was sent to this socket
 	 */
 	private void etaMonitorConnected(Socket client, byte[] info) {
+		System.out.println("monitor connected with info--"+new String(info));
 		User user = getUserForToken(info);
 		if (user == null) {
 			try {

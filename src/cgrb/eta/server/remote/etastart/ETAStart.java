@@ -60,7 +60,6 @@ import java.util.Vector;
 
 import org.apache.commons.codec.binary.Hex;
 
-import cgrb.eta.client.window.SC;
 import cgrb.eta.server.FileWatcherService;
 import cgrb.eta.server.FolderChangedListener;
 import cgrb.eta.server.LocalETAConnectionServer;
