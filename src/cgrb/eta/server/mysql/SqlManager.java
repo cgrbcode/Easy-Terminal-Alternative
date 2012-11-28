@@ -262,7 +262,7 @@ public class SqlManager {
 		try {
 			statement = getConnect().createStatement();
 			ResultSet rs;
-			rs = statement.executeQuery("select u.name,w.name,w.description,w.program,w.public,w.modified,w.id  from wrapper w left join user u on u.id=w.creator where w.id=" + id);
+			rs = statement.executeQuery("select u.name,u.id,w.name,w.description,w.program,w.public,w.modified,w.id  from wrapper w left join user u on u.id=w.creator where w.id=" + id);
 			Wrapper ret = null;
 			if (rs.next()) {
 				ret = new Wrapper(rs.getInt("w.id"));
@@ -271,6 +271,7 @@ public class SqlManager {
 				ret.setProgram(rs.getString("w.program"));
 				ret.setPublic(rs.getBoolean("w.public"));
 				ret.setName(rs.getString("w.name"));
+				ret.setCreatorId(rs.getInt("u.id"));
 				rs.close();
 
 				rs = statement.executeQuery("select * from wrapper_input i where  i.wrapper=" + ret.getId());
