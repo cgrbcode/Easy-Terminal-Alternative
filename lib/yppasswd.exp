@@ -1,0 +1,26 @@
+#!/usr/bin/expect -f
+# wrapper to make passwd(1) be non-interactive
+# username is passed as 1st arg, passwd as 2nd
+set timeout 1
+log_user 0
+set username [lindex $argv 0]
+set password [lindex $argv 1] 
+set newpassword [lindex $argv 2]
+#SHELL ensures its using the right environment
+spawn $env(SHELL)
+spawn su $username
+send -- "passwd\r"
+expect {Password: *}
+send -- "$password\r"
+expect {*\r*}
+send -- "passwd\r"
+expect {*Please enter old password:*\r}
+send "$password\r"
+expect {*Please enter new password:*\r}
+send "$newpassword\r"
+expect {*Please retype new password:*\r}
+send "$newpassword\r"
+log_user 1
+expect {*The NIS password has been changed*\r}
+exit
+expect eof

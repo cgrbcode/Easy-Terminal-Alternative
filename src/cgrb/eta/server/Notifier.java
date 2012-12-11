@@ -67,6 +67,7 @@ public class Notifier {
 			props.put("mail.smtp.user", from);
 			props.put("mail.smtp.starttls.enable", "true"); // added this line
 		}
+		System.out.println(props.toString());
 		String[] to = { toEmail }; // added this line
 		Session session = Session.getDefaultInstance(props, null);
 		MimeMessage message = new MimeMessage(session);

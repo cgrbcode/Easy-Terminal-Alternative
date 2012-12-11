@@ -39,10 +39,13 @@ import java.util.Vector;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -258,14 +261,12 @@ public class UserSettingsTab extends ETATab {
 		SC.ask("Change Password", temp,new ValueListener<Boolean>() {
 			public void returned(Boolean ret) {
 				if(newPass.getValue().equals(newPass2.getValue())){
-					communicationService.changePassword(oldPass.getValue(), newPass.getValue(), new MyAsyncCallback<Integer>() {
+					communicationService.changePassword(oldPass.getValue(), newPass.getValue(), new MyAsyncCallback<String>() {
 						@Override
-						public void success(Integer result) {
-							if(result<0){
-								SC.alert("Error", "Sorry your password couldn't be changed");
-							}else{
-								SC.alert("Success", "Your password has been changed");
-							}
+						public void success(String result) {
+							HTML res = new HTML(result);
+							res.addStyleName("simple-label");
+							SC.show("Change Password", res);
 						}
 					});
 				}else{

@@ -116,7 +116,7 @@ import cgrb.eta.shared.wrapper.Wrapper;
  * The server implementation of methods that our application might want to run.
  * 
  * Every method in the CommunicationServer interface needs to be implemented here also, every method in here should be prototyped in the CommunicationService interface.
- * Alternatively, there is an AsynchCommuncationService which is similar but is asynchronous. That interface is preferred.
+ * Alternatively, there is an AsyncCommuncationService which is similar but is asynchronous. That interface is preferred.
  * 
  * @author Alexander Boyd
  *
@@ -410,18 +410,20 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 			return true;
 		}
 		return false;
-	}
+	} 
 
-	public int changePassword(String oldPassword, String newPassword) {
+	public String changePassword(String oldPassword, String newPassword) {
 		User user = getUser();
 		if (user == null)
-			return -1;
+			return "No one is logged in.";
 		String userName = user.getUsername();
 		if (!authService.checkCredentials(userName, oldPassword)) {
-			return -1;
-		} else
-			authService.changePassword(userName, oldPassword, newPassword);
-		return 0;
+			return "Incorrect old password.";
+		} else {
+			String returned = authService.changePassword(userName, oldPassword, newPassword);
+			System.out.println("The change password returned: " + returned);
+			return returned;
+		}
 	}
 
 	public void deleteJob(int id) {
@@ -2661,6 +2663,6 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		String supportList = Settings.getInstance().getSetting("supportList").getStringValue();
 		//send the email to supportList :3
 		String subject = "New Password Request for " + accountName;
-		Notifier.sendEmail("eta@cgrb.oregonstate.edu", supportList, subject, body);
+		Notifier.sendEmail(supportList, supportList, subject, body);
 	}
 }

@@ -105,7 +105,7 @@ public interface CommunicationServiceAsync {
 
 	void createFolder(String path, AsyncCallback<Void> callback);
 
-	void changePassword(String oldPassword, String newPassword, AsyncCallback<Integer> callback);
+	void changePassword(String oldPassword, String newPassword, AsyncCallback<String> callback);
 
 	void closeRequest(boolean close, int request, AsyncCallback<Void> callback);
 

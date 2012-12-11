@@ -1,0 +1,42 @@
+#!/usr/bin/expect -f
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+set username [lindex $argv 0]
+set password [lindex $argv 1] 
+set newpassword [lindex $argv 2]
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#log_user 0 turns off output
+#log_user 1 turns on output
+#
+#turn on when you have errors, otherwise off
+
+set timeout 1
+log_user 0
+#SHELL ensures its using the right environment
+spawn $env(SHELL)
+spawn su $username
+expect {Password: *}
+send -- "$password\r"
+expect {*\r*}
+send -- "$newpassword\r"
+send -- "passwd\r"
+expect {*Changing password for user $username*\r}
+expect {*Changing password for $username.*\r}
+expect {*(current) UNIX password:*\r}
+send -- "$password\r"
+expect {*New password:*\r}
+send -- "$newpassword\r"
+expect {*Retype new password:*\r}
+send -- "$newpassword\r"
+log_user 1
+expect {*passwd: all authentication*\r}
+exit 1
+expect eof

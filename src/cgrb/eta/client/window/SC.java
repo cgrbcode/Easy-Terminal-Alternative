@@ -202,7 +202,7 @@ public class SC {
 		
 	}	
 	/**
-	 * Creates a window and displays the passed stuff.
+	 * Creates a window and displays the passed string.
 	 * 
 	 * @param message	A string to display
 	 * @param content	A widget to display

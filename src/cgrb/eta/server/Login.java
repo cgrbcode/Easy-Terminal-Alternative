@@ -34,14 +34,69 @@
  */
 package cgrb.eta.server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import cgrb.eta.server.settings.Settings;
 
 public class Login {
-	public static native int login(String user,String password);
-	public static native int startUserService(String user,String password,String command);
-	public static native int changePassword(String user,String oldPassword,String newPassword);
+	public static native int login(String user, String password);
 
-	static{
-		System.load(Settings.getInstance().getSetting("localPath").getStringValue()+"/liblogin.so");
+	public static native int startUserService(String user, String password, String command);
+	
+	/**
+	 * Changes a users password to the new given password
+	 * 
+	 * changePassword now calls an expect script that is system dependent and changes the users password. If a users login information is incorrect it will fail.
+	 * If there is anything wrong with system call, the error will be displayed to the user.
+	 * 
+	 * @param user	Username of the user.
+	 * @param oldPassword	User's old password.
+	 * @param newPassword User's new password
+	 * @return	Returns a string of all the returned information from the system call. This includes error messages, such as bad password, and success messages.
+	 * 
+	 */
+	public static String changePassword(String user, String oldPassword, String newPassword){
+		String ret = "";
+		try {
+			String p_line = "";
+			ArrayList<String> last_read = new ArrayList<String>();
+			//This should be setting/build dependent
+			Process p = Runtime.getRuntime().exec(
+					"../lib/passwd.exp " + user + " " + oldPassword + " " + newPassword);
+		
+			BufferedReader p_buff = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
+			try {
+				while ((p_line = p_buff.readLine()) != null) {
+					if (!last_read.contains(p_line)){
+						last_read.add(p_line);
+					}
+				}
+				// This code is a little dangerous
+				if(last_read.size() > 1){
+					last_read.remove(last_read.size()-1);
+				}
+				for(int i = 0; i < last_read.size(); i++){
+					ret += last_read.get(i) + "<br/>";
+				}
+				return ret;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return "Reading error.";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Could not execute passwd";
+		}
+	}
+
+	static {
+		try {
+			System.load(Settings.getInstance().getSetting("localPath").getStringValue() + "/liblogin.so");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
