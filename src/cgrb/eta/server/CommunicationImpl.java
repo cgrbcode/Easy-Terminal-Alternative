@@ -421,7 +421,6 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 			return "Incorrect old password.";
 		} else {
 			String returned = authService.changePassword(userName, oldPassword, newPassword);
-			System.out.println("The change password returned: " + returned);
 			return returned;
 		}
 	}

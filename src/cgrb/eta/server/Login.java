@@ -38,6 +38,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cgrb.eta.server.settings.Settings;
 
@@ -63,21 +65,20 @@ public class Login {
 		try {
 			String p_line = "";
 			ArrayList<String> last_read = new ArrayList<String>();
-			//This should be setting/build dependent
 			Process p = Runtime.getRuntime().exec(
-					"../lib/passwd.exp " + user + " " + oldPassword + " " + newPassword);
-		
+					Settings.getInstance().getSetting("localPath").getStringValue() + "/.passwd.exp " + user + " " + oldPassword + " " + newPassword);
+					//"../lib/passwd.exp " + user + " " + oldPassword + " " + newPassword);
 			BufferedReader p_buff = new BufferedReader(new InputStreamReader(p.getInputStream(), "UTF-8"));
 			try {
+				Pattern pattern = Pattern.compile(""+user+"+");
 				while ((p_line = p_buff.readLine()) != null) {
+					if(pattern.matcher(p_line).find())
+						break;
 					if (!last_read.contains(p_line)){
 						last_read.add(p_line);
 					}
 				}
-				// This code is a little dangerous
-				if(last_read.size() > 1){
-					last_read.remove(last_read.size()-1);
-				}
+				
 				for(int i = 0; i < last_read.size(); i++){
 					ret += last_read.get(i) + "<br/>";
 				}
@@ -88,7 +89,7 @@ public class Login {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			return "Could not execute passwd";
+			return "Could not execute passwd.";
 		}
 	}
 

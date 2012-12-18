@@ -90,7 +90,7 @@ body,html {
 	width: 99.5%;
 	top: -.5%;
 	height: 0%;
-	background-color: #D3D3D3;
+	background-color: #CDE2FA;
 	overflow: hidden;
 	border-radius:0 0 5px 5px;
 	-moz-border-radius:0 0 5px 5px;
@@ -102,13 +102,41 @@ body,html {
     border: 1px solid #5993D4;
 	
 }
-.animated-options-floats{
+.animated-options-simple-label {
+	color: #004D6A;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
+		Geneva, Verdana, sans-serif;
+	font-size: 13px;
+	padding: 8px 0px 8px 0px;
+	width: 100%;
+	background-color: #CDE2FA;
+	border-radius: 5px;
+	/*border: 2px solid white;*/
+	text-align: left;
+}
+.animated-options-floats-small{
 	float: left;
 	position: relative;
 	text-align: center;
-	margin: auto auto;
+	margin: 1px -3px 1px 1px;
 	word-wrap: normal;
-	width: 250px;
+	width: 19.6%;
+	background-color: #CDE2FA;
+	border-radius: 5px;
+	border: 2px solid white;
+	height: 100%;
+}
+.animated-options-floats-large{
+	float: left;
+	position: relative;
+	text-align: center;
+	margin: 1px -3px 1px 1px;
+	word-wrap: normal;
+	width: 30%;
+	background-color: #CDE2FA;
+	border-radius: 5px;
+	border: 2px solid white;
+	height: 100%;	
 }
 .button-down-animate-button{
 	padding: 8px;
@@ -159,11 +187,12 @@ body,html {
 }
 
 .eta-button-animate-button{
-	background-color: inherit;
+	background-color: #1D508A;
+	border-radius: 5px;
 	padding: 8px;
 	font-size: 13px;
 	font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
-	color: #004D6A;
+	color: white;
 	font-weight: bold;
 	
 }

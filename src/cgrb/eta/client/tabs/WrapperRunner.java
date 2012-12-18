@@ -155,25 +155,28 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		pane.clear();
 		options = new JobOptions();
 		jobName = new LabelButton(wrapper.getName());
+		jobName.setStyleName("animated-options-simple-label");
 		// make the bar
 		usersNot = new MultipleUserSelect();
-		Label descTitle = new Label("Description:");
-		Label descText = new Label(wrapper.getDescription());
-		descTitle.setStyleName("simple-label-desc");
-		descText.setStyleName("simple-label-desc");
+		Label desc = new Label("Description: " + wrapper.getDescription());
+		
+		desc.setStyleName("animated-options-simple-label");
+		
 
 		// setup hidden options
 		FlowPanel description = new FlowPanel();
-		description.setStyleName("animated-options-floats");
+		description.setStyleName("animated-options-floats-large");
 		FlowPanel folder = new FlowPanel();
-		folder.setStyleName("animated-options-floats");
+		folder.setStyleName("animated-options-floats-large");
 		FlowPanel wrapOptions = new FlowPanel();
-		wrapOptions.setStyleName("animated-options-floats");
+		wrapOptions.setStyleName("animated-options-floats-small");
 		FlowPanel notifications = new FlowPanel();
-		notifications.setStyleName("animated-options-floats");
+		notifications.setStyleName("animated-options-floats-small");
 
 		// description pane
-		description.add(new SimpleLabel("Program: " + wrapper.getProgram()));
+		Label title = new Label("Program: " + wrapper.getProgram());
+		title.setStyleName("animated-options-simple-label");
+		description.add(title);
 		Button change = new Button("Change Title").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				SC.ask("What do you want to name this job?", new ValueListener<String>() {
@@ -186,8 +189,7 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		change.setStyleDependentName("-animate-button", true);
 
 		description.add(change);
-		description.add(descTitle);
-		description.add(descText);
+		description.add(desc);
 
 		// wrapperOptions pane
 		Button sge = new Button("SGE Options").setClickHandler(new ClickHandler() {
@@ -196,22 +198,28 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 			}
 		});
 		sge.setStyleDependentName("-animate-button", true);
-		wrapOptions.add(sge);
 		saveStd = new CheckButton("Save STD");
 		saveStd.setStyleDependentName("-animate-check", true);
 		wrapOptions.add(saveStd);
+		wrapOptions.add(sge);
 
 		// Folder pane
-		SimpleLabel workingDir = new SimpleLabel("Working Dir");
-		folder.add(workingDir);
 		workingFolder = new SimpleLabel((FileBrowser.lastFolder) != "" ? FileBrowser.lastFolder : "No working folder.");
-		folder.add(workingFolder);
+		/*Extremely sloppy to just not add it.... but it should work.*/
+		//folder.add(workingFolder);height
+		
+		//refactor this so it's less shitty
+		final SimpleLabel workingDir = new SimpleLabel("Working Dir: " + ((FileBrowser.lastFolder) != "" ? FileBrowser.lastFolder : "No working folder."));
+		
+		workingDir.setStyleName("animated-options-simple-label");
+		folder.add(workingDir);
 		Button changebutt = new Button("Change").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				new FileSelector(new ItemSelector() {
 					public void itemSelected(String[] items) {
 						if (items != null && items.length > 0) {
 							workingFolder.setText(items[0]);
+							workingDir.setText("Working Dir: " + items[0]);
 						}
 					}
 				}, FileBrowser.FOLDER_SELECT);
@@ -221,22 +229,17 @@ public class WrapperRunner extends ETATab implements ValueChangeHandler<Wrapper>
 		folder.add(changebutt);
 
 		jobOptions.add(description);
-		jobOptions.add(new LargeSeprator());
+		jobOptions.add(folder);
 		jobOptions.add(notifications);
 		jobOptions.add(wrapOptions);
-		jobOptions.add(new LargeSeprator());
-		jobOptions.add(folder);
-		jobOptions.add(new LargeSeprator());
-		jobOptions.add(notifications);
-		jobOptions.add(new LargeSeprator());
+		// Set height to be equal to the probable maximum height. The parent div that is the nature of flow
+		// panel is keeping the 100% setting of height to fail.
+
 
 		// notifypane
-		SimpleLabel notifyMenu = new SimpleLabel("Notifications");
 		notifyMe = new CheckButton("Notify me");
-		notifyMe.setStyleDependentName("-animate-button", true);
-		notifications.add(notifyMenu);
+		notifyMe.setStyleDependentName("-animate-check", true);
 		notifications.add(notifyMe);
-
 		Button noteothers = new Button("Notify Others").setClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				SC.ask("Select the users you want to notify", usersNot, null);
