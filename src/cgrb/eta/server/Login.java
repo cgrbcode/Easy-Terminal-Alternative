@@ -94,10 +94,6 @@ public class Login {
 	}
 
 	static {
-		try {
-			System.load(Settings.getInstance().getSetting("localPath").getStringValue() + "/liblogin.so");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		System.load(Settings.getInstance().getSetting("localPath").getStringValue() + "/liblogin.so");
 	}
 }

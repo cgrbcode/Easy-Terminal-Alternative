@@ -67,7 +67,6 @@ import cgrb.eta.server.WrapperUtils;
 import cgrb.eta.server.remote.MalformedQueryException;
 import cgrb.eta.server.remote.ProgramManager;
 import cgrb.eta.server.remote.RemoteJob;
-import cgrb.eta.server.remote.RemoteLocalJob;
 import cgrb.eta.server.remote.RemoteSGEJob;
 import cgrb.eta.server.remote.TabQueryer;
 import cgrb.eta.server.rmi.ConnectionListener;
@@ -606,7 +605,7 @@ public class ETAStart implements ConnectionListener, EventOccuredListener, Remot
 		RemoteJob rJob;
 		job.getWrapper().addVar("ETAJOB", job.getId() + "");
 		job.getWrapper().addVar("ETAHOST", System.getenv("HOSTNAME"));
-		rJob = new RemoteLocalJob(job, this);
+		rJob = new RemoteSGEJob(job, this);
 		try {
 			rJob.start();
 		} catch (Exception e) {
