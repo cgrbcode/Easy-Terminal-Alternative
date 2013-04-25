@@ -1,7 +1,4 @@
 package cgrb.eta.server.services;
-
-import org.apache.commons.lang.NotImplementedException;
-
 import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.LDAPConnection;
@@ -11,6 +8,8 @@ import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
+import com.unboundid.ldap.sdk.extensions.PasswordModifyExtendedRequest;
+import com.unboundid.ldap.sdk.extensions.PasswordModifyExtendedResult;
 
 public class LDAPAuthenticator extends AuthenticationService {
 
@@ -34,7 +33,25 @@ public class LDAPAuthenticator extends AuthenticationService {
 
 	@Override
 	public String changePassword(String user, String oldPassword, String newPassword) {
-		throw new NotImplementedException();
+		LDAPConnector con = new LDAPConnector();
+		LDAPConnection connection = con.getConn();
+
+		PasswordModifyExtendedRequest passwordModifyRequest = new PasswordModifyExtendedRequest("uid=" + user + "," + con.getAuthdn(), oldPassword, newPassword);
+		PasswordModifyExtendedResult passwordModifyResult;
+		try {
+			passwordModifyResult = (PasswordModifyExtendedResult) connection.processExtendedOperation(passwordModifyRequest);
+		if (passwordModifyResult.getResultCode() == ResultCode.SUCCESS) {
+			System.out.println("The password change was successful.");
+			return "Success changing the password!!";
+		} else {
+			System.err.println("An error occurred while attempting to process " + "the password modify extended request.");
+			System.err.println(passwordModifyResult.getResultCode());
+			return "An error has occurred: " + passwordModifyResult.getResultCode();
+		}
+		} catch (LDAPException e) {
+			e.printStackTrace();
+			return "Something went wrong trying to read the response.";
+		}
 
 	}
 
