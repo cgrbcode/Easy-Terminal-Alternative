@@ -95,7 +95,7 @@ public interface CommunicationService extends RpcService {
 	boolean logIn(String user, String password);
 	String getFileContents(File file, long startByte, long bytes);
 	void createFolder(String path);
-	int changePassword(String oldPassword, String newPassword);
+	String changePassword(String oldPassword, String newPassword);
 	String writeFile(String file, String contents);
 	public String[] getCommandsInPath();
 	public boolean isInstalled(String program);

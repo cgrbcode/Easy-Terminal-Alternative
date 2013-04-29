@@ -39,7 +39,7 @@ import cgrb.eta.server.settings.Settings;
 public class Login {
 	public static native int login(String user,String password);
 	public static native int startUserService(String user,String password,String command);
-	public static native int changePassword(String user,String oldPassword,String newPassword);
+	public static native String changePassword(String user,String oldPassword,String newPassword);
 
 	static{
 		System.load(Settings.getInstance().getSetting("localPath").getStringValue()+"/liblogin.so");

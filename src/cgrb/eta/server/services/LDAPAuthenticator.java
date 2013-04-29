@@ -15,12 +15,12 @@ public class LDAPAuthenticator extends AuthenticationService {
 
 	@Override
 	public boolean checkCredentials(String user, String password) {
-		try {
+			try {
 			LDAPConnector con = new LDAPConnector();
 			LDAPConnection connection = con.getConn();
 			final BindRequest request = new SimpleBindRequest("uid=" + user + ","+con.getAuthdn(), password);
 			BindResult result = connection.bind(request);
-			if (result.getResultCode() == ResultCode.SUCCESS) {
+		if (result.getResultCode() == ResultCode.SUCCESS) {
 				con.disconnect();
 			}
 			return true;
@@ -33,24 +33,31 @@ public class LDAPAuthenticator extends AuthenticationService {
 
 	@Override
 	public String changePassword(String user, String oldPassword, String newPassword) {
+		
+		//something here needs to check to make sure the password is okay, regular expressionssslss
 		LDAPConnector con = new LDAPConnector();
 		LDAPConnection connection = con.getConn();
-
 		PasswordModifyExtendedRequest passwordModifyRequest = new PasswordModifyExtendedRequest("uid=" + user + "," + con.getAuthdn(), oldPassword, newPassword);
 		PasswordModifyExtendedResult passwordModifyResult;
-		try {
+		try {		
+			final BindRequest request = new SimpleBindRequest("uid=" + user + ","+con.getAuthdn(), oldPassword);
+			BindResult result = connection.bind(request);
+			if (result.getResultCode() != ResultCode.SUCCESS){
+				return "An error has occurred: " + result.getResultCode();
+			}
 			passwordModifyResult = (PasswordModifyExtendedResult) connection.processExtendedOperation(passwordModifyRequest);
-		if (passwordModifyResult.getResultCode() == ResultCode.SUCCESS) {
-			System.out.println("The password change was successful.");
-			return "Success changing the password!!";
-		} else {
-			System.err.println("An error occurred while attempting to process " + "the password modify extended request.");
-			System.err.println(passwordModifyResult.getResultCode());
-			return "An error has occurred: " + passwordModifyResult.getResultCode();
-		}
+			if (passwordModifyResult.getResultCode() == ResultCode.SUCCESS) {
+				System.out.println("The password change was successful.");
+				con.disconnect();
+				return "Success changing the password!!";
+			} else {
+				System.err.println("An error occurred while attempting to process " + "the password modify extended request.");
+				System.err.println(passwordModifyResult.getResultCode());
+				return "An error has occurred: " + passwordModifyResult.getResultCode();
+			}
 		} catch (LDAPException e) {
 			e.printStackTrace();
-			return "Something went wrong trying to read the response.";
+			return "Invalid old password. If the problem persist contact an administrator.";
 		}
 
 	}

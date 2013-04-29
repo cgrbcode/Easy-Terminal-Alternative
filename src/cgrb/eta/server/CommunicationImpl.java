@@ -412,16 +412,12 @@ public class CommunicationImpl extends RpcServlet implements CommunicationServic
 		return false;
 	}
 
-	public int changePassword(String oldPassword, String newPassword) {
+	public String changePassword(String oldPassword, String newPassword) {
 		User user = getUser();
 		if (user == null)
-			return -1;
+			return "Error, no user associated with this session.";
 		String userName = user.getUsername();
-		if (!authService.checkCredentials(userName, oldPassword)) {
-			return -1;
-		} else
-			authService.changePassword(userName, oldPassword, newPassword);
-		return 0;
+		return authService.changePassword(userName, oldPassword, newPassword);
 	}
 
 	public void deleteJob(int id) {

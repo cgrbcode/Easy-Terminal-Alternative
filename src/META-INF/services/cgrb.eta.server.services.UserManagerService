@@ -1,2 +1,2 @@
-cgrb.eta.server.services.IPlantUserManager
 cgrb.eta.server.services.SandboxedLocalUserManager
+cgrb.eta.server.services.IPlantUserManager

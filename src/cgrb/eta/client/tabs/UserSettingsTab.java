@@ -258,14 +258,10 @@ public class UserSettingsTab extends ETATab {
 		SC.ask("Change Password", temp,new ValueListener<Boolean>() {
 			public void returned(Boolean ret) {
 				if(newPass.getValue().equals(newPass2.getValue())){
-					communicationService.changePassword(oldPass.getValue(), newPass.getValue(), new MyAsyncCallback<Integer>() {
+					communicationService.changePassword(oldPass.getValue(), newPass.getValue(), new MyAsyncCallback<String>() {
 						@Override
-						public void success(Integer result) {
-							if(result<0){
-								SC.alert("Error", "Sorry your password couldn't be changed");
-							}else{
-								SC.alert("Success", "Your password has been changed");
-							}
+						public void success(String result) {
+							SC.alert("Change Password", result);
 						}
 					});
 				}else{
