@@ -33,9 +33,11 @@ public class LDAPAuthenticator extends AuthenticationService {
 
 	@Override
 	public String changePassword(String user, String oldPassword, String newPassword) {
-		
-		//something here needs to check to make sure the password is okay, regular expressionssslss
-		LDAPConnector con = new LDAPConnector();
+		String check = this.isLegalPassword(newPassword);
+		if (!check.equals("pass")){
+            return check;
+        }
+        LDAPConnector con = new LDAPConnector();
 		LDAPConnection connection = con.getConn();
 		PasswordModifyExtendedRequest passwordModifyRequest = new PasswordModifyExtendedRequest("uid=" + user + "," + con.getAuthdn(), oldPassword, newPassword);
 		PasswordModifyExtendedResult passwordModifyResult;
@@ -49,7 +51,7 @@ public class LDAPAuthenticator extends AuthenticationService {
 			if (passwordModifyResult.getResultCode() == ResultCode.SUCCESS) {
 				System.out.println("The password change was successful.");
 				con.disconnect();
-				return "Success changing the password!!";
+				return "Your password has been changed successfully.";
 			} else {
 				System.err.println("An error occurred while attempting to process " + "the password modify extended request.");
 				System.err.println(passwordModifyResult.getResultCode());
@@ -84,5 +86,37 @@ public class LDAPAuthenticator extends AuthenticationService {
 		return "";
 
 	}
+    /**
+     * Checks a password to see if it matches up with the enforced password policy.
+     *
+     * This method should me modified or overridden (probably moved to Authentication Service) if you are installing a custom module.
+     *
+     * @param password password to be checked
+     * @return String Returns "pass" if it passed the policy, returns the problem otherwise.
+     */
+    private String isLegalPassword(String password){
+        boolean contains_num = false, contains_lowercase = false , contains_uppercase = false, contains_special = false;
+        if (password.length() < 6){
+            return "The password must have at least 6 characters";
+        }
+        if (password.matches("^(?=.*[0-9]).{6,}$")){            
+            contains_num = true;
+        }
+        if (password.matches("^(?=.*[a-z]).{6,}$")){
+            contains_lowercase = true;
+        }
+        if (password.matches("^(?=.*[A-Z]).{6,}$")){
+            contains_uppercase = true;
+        }
+        if (password.matches("^(?=.*[!@#$%^&+=]).{6,}$")){
+            contains_special = true;
+        }
+        if( ! (contains_num || contains_special) ){
+            if ( !(contains_uppercase && contains_lowercase)){
+                return "The password must have both upper and lowecase letters, or non-letters.";
+            }
+        }
+        return "pass";
+    }
 
 }
