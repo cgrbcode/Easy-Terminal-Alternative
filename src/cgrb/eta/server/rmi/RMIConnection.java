@@ -61,43 +61,12 @@ public class RMIConnection extends Thread implements InvocationHandler {
 	private Vector<cgrb.eta.server.rmi.Method> savedMethods = new Vector<cgrb.eta.server.rmi.Method>();
 
 	public RMIConnection(Socket clientSocket, RemoteService runner, boolean asClient) {
-		client = clientSocket;
-		try {
-			if (asClient) {
-				oos = new ObjectOutputStream(client.getOutputStream());
-				ois = new ObjectInputStream(client.getInputStream());
-			} else {
-				ois = new ObjectInputStream(client.getInputStream());
-				oos = new ObjectOutputStream(client.getOutputStream());
-			}
-			ois.mark(1024 * 5);
-			client.getInputStream().mark(1024 * 5);
-			this.runner = runner;
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		this.start();
+		this(clientSocket,runner,asClient, null);
 	}
 
 	public RMIConnection(Socket clientSocket, RemoteService runner, boolean asClient, ConnectionListener list) {
 		listener = list;
-		client = clientSocket;
-		try {
-			if (asClient) {
-				oos = new ObjectOutputStream(client.getOutputStream());
-				ois = new ObjectInputStream(client.getInputStream());
-			} else {
-				ois = new ObjectInputStream(client.getInputStream());
-				oos = new ObjectOutputStream(client.getOutputStream());
-			}
-			client.getInputStream().mark(1024 * 5);
-			ois.mark(1024 * 5);
-
-			this.runner = runner;
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		this.start();
+		reconnect(clientSocket, runner, asClient);
 	}
 
 	public void reconnect(Socket clientSocket, RemoteService runner, boolean asClient) {
